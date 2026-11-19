@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CBT Perpustakaan · Ujian Simulasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--card:#fff;--ink:#0f2740;--mute:#5b6f86;--line:#d5deea;--pri:#1f5fbf;--pri-ink:#fff;--ok:#1b8a5a;--bad:#c8402f;--flag:#f2b134;--sel:#e3eeff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media not all{:root:not([data-theme="light"]){--bg:#0b1624;--card:#13243a;--ink:#e8f0fa;--mute:#93a7bf;--line:#254060;--pri:#5b9bff;--pri-ink:#06182e;--ok:#4cc790;--bad:#ff7d6b;--sel:#1b3556;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1624;--card:#13243a;--ink:#e8f0fa;--mute:#93a7bf;--line:#254060;--pri:#5b9bff;--pri-ink:#06182e;--ok:#4cc790;--bad:#ff7d6b;--sel:#1b3556;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+h1,h2{margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.15}
+h2{font-size:1.25rem}
+p{margin:0 0 12px}.mute{color:var(--mute)}
+.btn{border:1px solid var(--line);background:var(--card);padding:11px 18px;border-radius:10px;cursor:pointer;font-weight:600;min-height:44px}
+.btn.pri{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,.opt:focus-within,.q:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+label{display:block;font-weight:600;margin:14px 0 6px}
+input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.err{color:var(--bad);min-height:1.4em;margin:10px 0 0;font-weight:600}
+.hide{display:none!important}
+/* login */
+.login{display:grid;gap:20px;align-items:center;min-height:calc(100vh - 32px)}
+@media(min-width:800px){.login{grid-template-columns:1.1fr 1fr}}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.logo{width:48px;height:48px;border-radius:12px;background:var(--pri);color:var(--pri-ink);display:grid;place-items:center;font-weight:800;font-size:1.2rem}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.facts div{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.facts b{display:block;font-size:1.3rem}
+.rules{padding-left:20px;margin:0 0 16px}
+/* exam */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0}
+.bar{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.timer{font-weight:800;font-variant-numeric:tabular-nums;font-size:1.2rem}
+.timer.low{color:var(--bad)}
+.prog{height:6px;background:var(--line);border-radius:6px;margin-top:8px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--pri);width:0;transition:width .25s}
+.exam{display:grid;gap:16px;margin-top:8px}
+@media(min-width:900px){.exam{grid-template-columns:1fr 280px;align-items:start}.side{position:sticky;top:90px}}
+.qtext{font-size:1.15rem;font-weight:600;margin:6px 0 16px}
+.opt{display:flex;gap:12px;align-items:center;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .k{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;flex:none}
+.opt.on{background:var(--sel);border-color:var(--pri)}
+.opt.on .k{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.opt.right{border-color:var(--ok)}.opt.right .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad)}.opt.wrong .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:8px;margin:12px 0}
+.q{min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:700;cursor:pointer;position:relative}
+.q.done{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.q.cur{outline:3px solid var(--ink);outline-offset:1px}
+.q.fl::after{content:"";position:absolute;top:3px;right:3px;width:10px;height:10px;border-radius:50%;background:var(--flag)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--mute)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--line)}
+.legend .a::before{background:var(--pri)}.legend .f::before{background:var(--flag);border-radius:50%}
+/* result */
+.score{font-size:clamp(3rem,14vw,5rem);font-weight:800;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stats div{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.rev{margin-top:16px}
+.rev .card{margin-bottom:12px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);max-width:380px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(5,15,30,.55)}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:min(92vw,460px);background:var(--bad);color:#fff;padding:12px 16px;border-radius:12px;font-weight:600;z-index:20}
+#finish{background:var(--flag);color:#3a2a00;border-color:var(--flag)}
+#finish:disabled{opacity:1;cursor:not-allowed}
+#finish:not(:disabled){background:var(--ok);color:#fff;border-color:var(--ok)}
+.menu{position:absolute;right:0;top:calc(100% + 8px);width:min(320px,86vw);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 8px 24px rgba(15,39,64,.15);z-index:10}
+.hdr{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.ax{width:44px;height:44px;border-radius:10px;background:var(--pri);color:#fff;font-weight:800;font-size:1.25rem;display:grid;place-items:center;flex:none}
+.led{flex:1;min-width:0;overflow:hidden;white-space:nowrap;background:#0b1b2e;color:#ffd24a;border-radius:8px;padding:10px 0;font-weight:800;letter-spacing:.06em}
+.led span{display:inline-block;padding-left:100%;animation:led 22s linear infinite}
+@keyframes led{to{transform:translateX(-100%)}}
+@media(prefers-reduced-motion:reduce){.led span{animation:none;padding-left:12px}}
+.hdr{flex-direction:column;gap:8px}
+.led{width:100%;flex:none}
+.menu{max-height:70vh;overflow:auto}
+
+/* tema: aurora kaca */
+:root{--bg:#070b24;--card:#10163f;--ink:#eef1ff;--mute:#a0a9d8;--line:rgba(255,255,255,.16);--pri:#8b7bff;--pri-d:#5a46e8;--pri-ink:#fff;--ok:#34d399;--bad:#ff6b7a;--flag:#fbbf24;--sel:rgba(139,123,255,.22);--glass:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.04));--disp:"Bricolage Grotesque","Figtree",system-ui,sans-serif;--body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+body{font:400 16px/1.55 var(--body);color:var(--ink);background-color:var(--bg);background-image:radial-gradient(900px 560px at 88% -6%,rgba(110,80,255,.45),transparent 62%),radial-gradient(760px 520px at -10% 40%,rgba(20,190,230,.24),transparent 60%),radial-gradient(720px 480px at 70% 112%,rgba(245,87,150,.28),transparent 62%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.9) 1px,transparent 1.3px);background-size:48px 48px;opacity:.1;-webkit-mask-image:linear-gradient(#000,transparent 75%);mask-image:linear-gradient(#000,transparent 75%)}
+.hdr,.wrap{position:relative;z-index:1}
+h1,h2,.score,.timer{font-family:var(--disp);font-style:normal;font-weight:800}
+h2{font-size:1.3rem;letter-spacing:-.015em}
+label{font-weight:700;font-size:.9rem;color:var(--ink)}
+.mute{color:var(--mute)}
+/* header */
+.hdr{display:flex;flex-direction:column;gap:10px;padding:12px 18px;background:rgba(9,13,40,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.bm{display:flex;align-items:center;gap:12px;min-width:0}
+.bm svg{width:50px;height:50px;flex:none;filter:drop-shadow(0 6px 14px rgba(110,80,255,.55))}
+.bt{min-width:0;flex:1}
+.wm{display:flex;align-items:center;gap:9px;font:800 clamp(1.3rem,5.8vw,1.95rem)/1 var(--disp);letter-spacing:-.025em;color:var(--ink);white-space:nowrap}
+.wm .a{background:linear-gradient(135deg,#8b7bff,#3ec6ff);color:#fff;padding:.1em .42em .16em;border-radius:10px;box-shadow:0 6px 18px -4px rgba(110,80,255,.7)}
+.tag{display:flex;align-items:center;gap:9px;margin-top:8px;font:600 .8rem var(--body);letter-spacing:.02em;color:var(--mute)}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(52,211,153,.22);flex:none}
+.tag::after{content:"";flex:1;height:0;border-top:1px dashed var(--line);background:none}
+.led{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--flag);border-radius:99px;padding:8px 0;font:700 .78rem var(--disp);letter-spacing:.16em}
+/* kartu, tombol, input */
+.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 24px 60px -28px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.12)}
+.dz{position:relative;box-shadow:0 30px 90px -34px rgba(110,80,255,.75),inset 0 1px 0 rgba(255,255,255,.14)}
+.dz::before{content:"";position:absolute;left:26px;right:26px;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#8b7bff,#3ec6ff,transparent)}
+.btn{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--ink);border-radius:14px;font-weight:700;padding:11px 20px;min-height:46px;transition:transform .12s,box-shadow .2s,background .2s}
+.btn:hover:not(:disabled){background:rgba(255,255,255,.14);transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.pri{background:linear-gradient(135deg,#7c5cff,#2fb8ff);border-color:transparent;color:#fff;box-shadow:0 12px 28px -10px rgba(96,110,255,.9)}
+.btn.pri:hover:not(:disabled){background:linear-gradient(135deg,#8d70ff,#4cc3ff)}
+.btn:disabled{opacity:.4}
+input[type=text],input[type=password]{width:100%;padding:13px 15px;border:1px solid rgba(255,255,255,.2);border-radius:14px;background:rgba(255,255,255,.07);color:var(--ink);font-weight:500}
+input::placeholder{color:rgba(160,169,216,.7)}
+input[type=text]:focus-visible,input[type=password]:focus-visible{outline:none;border-color:#6fd3ff;box-shadow:0 0 0 4px rgba(62,198,255,.2)}
+.err{color:var(--bad)}
+/* login */
+.stripes{display:flex;gap:8px;margin-bottom:14px}
+.stripes i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);background:rgba(255,255,255,.06);transform:none;opacity:1;font:700 .62rem var(--disp);font-style:normal;color:var(--ink)}
+.stripes i:nth-child(1)::after{content:"A"}.stripes i:nth-child(2)::after{content:"B"}.stripes i:nth-child(3)::after{content:"C"}.stripes i:nth-child(4)::after{content:"D"}.stripes i:nth-child(5)::after{content:"E"}
+.stripes i:nth-child(3){background:linear-gradient(135deg,#8b7bff,#3ec6ff);border-color:transparent;color:#fff}
+.hero h1{font-size:clamp(2.7rem,12vw,4.8rem);line-height:.95;letter-spacing:-.04em;margin:0 0 16px;background:linear-gradient(180deg,#fff 20%,#aab4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:36ch}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.facts div{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:12px 6px 10px;text-align:center;font-size:.82rem;font-weight:600;color:var(--mute)}
+.facts b{display:block;font:800 2.1rem/1 var(--disp);margin-bottom:4px;letter-spacing:-.03em;background:linear-gradient(135deg,#c7beff,#7fdcff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.06);font-weight:600;font-size:.8rem}
+.chips span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c1,#8b7bff);box-shadow:0 0 8px var(--c1,#8b7bff)}
+.rules{list-style:none;padding:0;margin:0 0 18px}
+.rules li{position:relative;padding-left:30px;margin-bottom:10px}
+.rules li::before{content:"";position:absolute;left:0;top:.3em;width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5)}
+.rules li:first-child::before{background:linear-gradient(135deg,#8b7bff,#3ec6ff);border-color:transparent}
+.agree{display:flex;gap:12px;align-items:flex-start;margin:0 0 18px;padding:13px 14px;border:1px dashed rgba(255,255,255,.35);border-radius:14px;background:rgba(255,255,255,.05);font-weight:600;font-size:.92rem;cursor:pointer}
+.agree input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:#7c5cff}
+/* carousel 3D */
+.hint{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:.88rem;font-weight:600}
+.hint::before{content:"";width:34px;height:10px;border-radius:8px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45) 50%,transparent)}
+.stage{position:relative;height:372px;margin:6px -10px 0;perspective:1100px;overflow:hidden;touch-action:pan-y;cursor:grab;outline:none;-webkit-user-select:none;user-select:none}
+.stage:active{cursor:grabbing}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px rgba(62,198,255,.6);border-radius:18px}
+.stage::after{content:"";position:absolute;left:18%;right:18%;bottom:6px;height:28px;background:radial-gradient(closest-side,rgba(130,110,255,.55),transparent);filter:blur(6px);pointer-events:none}
+.track{position:absolute;inset:0;transform-style:preserve-3d}
+.pick{position:absolute;left:50%;top:16px;width:var(--cw,230px);height:322px;margin-left:calc(var(--cw,230px)/-2);padding:0;border:1px solid rgba(255,255,255,.3);border-radius:28px;overflow:hidden;text-align:left;color:#fff;background:linear-gradient(155deg,var(--c1),var(--c2));box-shadow:0 34px 60px -24px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.4);display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;will-change:transform,filter}
+.pick::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 20% 0%,rgba(255,255,255,.35),transparent 55%);pointer-events:none}
+.pick.snap{transition:transform .42s cubic-bezier(.2,.8,.2,1),filter .42s,opacity .42s}
+.pick .gl{position:absolute;right:-6px;top:56px;font:800 4.4rem/1 var(--disp);letter-spacing:-.05em;opacity:.22;pointer-events:none;white-space:nowrap}
+.pick .ic{position:absolute;left:18px;top:18px;padding:5px 13px;border-radius:99px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.3);font:800 .85rem var(--disp);letter-spacing:.04em}
+.pick .tx{position:relative;display:block;padding:44px 20px 20px;background:linear-gradient(transparent,rgba(0,0,0,.5))}
+.pick b{display:block;font:800 1.5rem/1.1 var(--disp);letter-spacing:-.02em;margin-bottom:6px}
+.pick .s{display:block;font-size:.84rem;opacity:.9;font-weight:600}
+.pick.on{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 40px 70px -20px var(--c2)}
+.pick.on .s::after{content:"  ·  Dipilih"}
+.cvbar{display:flex;align-items:center;justify-content:center;gap:14px;margin:10px 0 12px}
+.rb{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font:700 1.5rem/1 var(--disp);cursor:pointer;flex:none}
+.rb:hover{background:rgba(255,255,255,.16)}
+.cvlab{flex:1;max-width:240px;text-align:center;font:800 1.1rem var(--disp)}
+.cvdots{display:flex;gap:7px;justify-content:center;margin-bottom:20px}
+.cvdots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.25);transition:width .25s,background .25s;cursor:pointer}
+.cvdots i.on{width:26px;background:linear-gradient(90deg,#8b7bff,#3ec6ff)}
+[data-k=indo]{--c1:#ff6b7a;--c2:#a3123a}[data-k=ipa]{--c1:#34e3a6;--c2:#067a5b}[data-k=ips]{--c1:#ffb44d;--c2:#bf3f0c}[data-k=jawa]{--c1:#b878ff;--c2:#5320b0}[data-k=inggris]{--c1:#6a97ff;--c2:#2527b5}[data-k=pjok]{--c1:#ff9150;--c2:#d1330a}[data-k=info]{--c1:#2ad8f2;--c2:#0b5b9c}[data-k=mtk]{--c1:#8b9bff;--c2:#1a1d66}[data-k=seni]{--c1:#ff72bd;--c2:#98154c}[data-k=arab]{--c1:#e9bd72;--c2:#6f4210}
+/* ujian */
+.hdr{position:relative}
+.top{background:linear-gradient(var(--bg) 78%,transparent);padding:10px 0 8px}
+.bar{border:1px solid var(--line);border-left:1px solid var(--line);border-radius:18px;padding:10px 12px 10px 16px;background:rgba(14,20,58,.85);backdrop-filter:blur(14px);box-shadow:0 14px 34px -18px rgba(0,0,0,.8)}
+#who{font:700 1rem var(--disp)}
+.timer{background:linear-gradient(135deg,#7c5cff,#2fb8ff);color:#fff;padding:6px 14px;border-radius:12px;font:800 1.35rem var(--disp);font-variant-numeric:tabular-nums;letter-spacing:.03em;box-shadow:0 8px 20px -8px rgba(96,110,255,.9)}
+.timer.low{background:linear-gradient(135deg,#ff6b7a,#d1203a);animation:pl 1s steps(2) infinite}
+@keyframes pl{50%{opacity:.72}}
+.prog{height:8px;margin-top:10px;border:0;border-radius:8px;background:rgba(255,255,255,.1)}
+.prog i{background:linear-gradient(90deg,#8b7bff,#3ec6ff,#34d399);border-radius:8px}
+.pips{display:flex;gap:6px;margin-top:7px}
+.pips i{width:13px;height:13px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px rgba(52,211,153,.7)}
+.pips i.x{background:var(--bad);opacity:.35;box-shadow:none}
+#qn{display:inline-block;background:var(--sel);color:#cfc9ff;font-weight:700;font-size:.82rem;padding:3px 12px;border-radius:99px}
+.qtext{font:600 1.25rem/1.55 var(--body);margin:12px 0 18px;color:var(--ink)}
+.opt{display:flex;gap:14px;align-items:center;padding:12px 14px;margin-bottom:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.05);cursor:pointer;transition:background .15s,border-color .15s}
+.opt:hover{background:rgba(255,255,255,.1)}
+.opt .k{width:34px;height:34px;border:1.5px solid rgba(255,255,255,.4);border-radius:50%;background:transparent;display:grid;place-items:center;flex:none;font:800 .95rem var(--disp)}
+.opt.on{background:var(--sel);border-color:#8b7bff;box-shadow:0 0 0 1px #8b7bff,0 10px 26px -12px rgba(139,123,255,.9)}
+.opt.on .k{background:linear-gradient(135deg,#8b7bff,#3ec6ff);color:#fff;border-color:transparent}
+.opt.right{background:rgba(52,211,153,.14);border-color:var(--ok)}.opt.right .k{background:var(--ok);color:#04261a;border-color:var(--ok)}
+.opt.wrong{background:rgba(255,107,122,.14);border-color:var(--bad)}.opt.wrong .k{background:var(--bad);color:#2a0409;border-color:var(--bad)}
+.side{top:20px}
+.grid{gap:8px}
+.q{min-height:44px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.06);color:var(--ink);font:700 1rem var(--disp)}
+.q.done{background:linear-gradient(135deg,#7c5cff,#2fb8ff);border-color:transparent;color:#fff}
+.q.cur{outline:2px solid #fff;outline-offset:2px}
+.q.fl::after{top:-5px;right:-5px;width:14px;height:14px;background:var(--flag);border:2px solid #0b1030}
+.legend{gap:14px;font-size:.82rem;font-weight:600}
+.legend span::before{width:13px;height:13px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);border-radius:4px}
+.legend .a::before{background:linear-gradient(135deg,#7c5cff,#2fb8ff);border-color:transparent}.legend .f::before{background:var(--flag);border-radius:50%;border-color:transparent}
+#finish{color:#2a1c00}
+#finish:not(:disabled){background:linear-gradient(135deg,#34d399,#0ea5a0);border-color:transparent;color:#032a1c;box-shadow:0 12px 28px -10px rgba(52,211,153,.8)}
+/* hasil */
+.score{font-size:clamp(4.2rem,20vw,7.2rem);line-height:.9;letter-spacing:-.05em;margin:6px 0 4px;background:linear-gradient(135deg,#c7beff,#7fdcff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.score .mute{-webkit-text-fill-color:var(--mute)}
+.stats{gap:10px}
+.stats div{border:1px solid var(--line);border-radius:16px;padding:12px 6px;text-align:center;font-weight:600;font-size:.85rem}
+.stats b{font:800 1.9rem/1.1 var(--disp)}
+.stats div:nth-child(1){background:rgba(52,211,153,.14)}.stats div:nth-child(2){background:rgba(255,107,122,.14)}.stats div:nth-child(3){background:rgba(255,255,255,.07)}
+.rev h2{margin:22px 0 12px}.rev .card{margin-bottom:14px}
+/* menu, dialog, toast */
+.menu{background:#10163f;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -12px rgba(0,0,0,.8)}
+dialog{background:#10163f;color:var(--ink);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px -20px rgba(110,80,255,.7);padding:22px}
+dialog::backdrop{background:rgba(4,6,22,.7);backdrop-filter:blur(5px)}
+#wdlg{border-color:var(--bad);box-shadow:0 30px 80px -20px rgba(255,107,122,.6)}
+#wdlg h2{color:var(--bad)}
+.toast{border:1px solid rgba(255,255,255,.3);box-shadow:0 14px 34px -10px rgba(0,0,0,.7);background:#d1203a}
+@media(max-width:700px){.stage{height:356px}.pick{height:306px}}
+@media(prefers-reduced-motion:reduce){.timer.low{animation:none}.pick.snap{transition:none}}
+
+/* kartu mapel detail */
+.stage{height:384px}
+.pick{height:332px;border-radius:30px;background:linear-gradient(155deg,var(--c1),var(--c2))}
+.pick::after{content:"";position:absolute;inset:7px;border-radius:24px;border:1px solid rgba(255,255,255,.22);pointer-events:none}
+.pick .rings{position:absolute;left:50%;top:128px;width:320px;height:320px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.2) 0 1px,transparent 1px 20px);-webkit-mask-image:radial-gradient(circle,#000 22%,transparent 68%);mask-image:radial-gradient(circle,#000 22%,transparent 68%);pointer-events:none}
+.pick .ic{left:20px;top:20px;z-index:1}
+.pick .badge{position:absolute;right:20px;top:20px;z-index:1;padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);font:700 .76rem var(--body)}
+.pick .badge u{text-decoration:none}.pick .badge em{display:none;font-style:normal}
+.pick.on .badge{background:#fff;color:#14163a;border-color:#fff}.pick.on .badge u{display:none}.pick.on .badge em{display:inline}
+.pick .art{position:absolute;left:50%;top:62px;transform:translateX(-50%);width:116px;height:116px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.4),rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.5);box-shadow:0 22px 40px -14px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.6)}
+.pick .art svg{width:66px;height:66px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.pick .tx{padding:40px 20px 22px;background:linear-gradient(transparent,rgba(0,0,0,.5) 55%)}
+.pick b{font-size:1.4rem}
+.pick .meta{display:flex;gap:6px;flex-wrap:wrap}
+.pick .meta i{font-style:normal;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.24)}
+.pick.on::after{border-color:rgba(255,255,255,.7)}
+.cvdesc{text-align:center;color:var(--mute);font-size:.9rem;margin:0 0 12px;min-height:1.4em}
+.foot{text-align:center;color:var(--mute);font-size:.78rem;margin:28px 0 6px;opacity:.7}
+::selection{background:#7c5cff;color:#fff}
+html{scrollbar-color:#4a4f99 transparent}
+@media(max-width:700px){.stage{height:372px}.pick{height:320px}}
+
+/* ===== tema detail ===== */
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 75%)}
+.hdr{border-bottom:1px solid transparent;border-image:linear-gradient(90deg,transparent,#8b7bff,#3ec6ff,#f55796,transparent) 1}
+.card{position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;right:-60px;top:-60px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(139,123,255,.28),transparent 70%);pointer-events:none}
+h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#wdlg h2{background:none;color:var(--bad)}
+.dm{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 18px}
+.dm div{position:relative;display:grid;gap:2px;padding:12px 12px 12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--glass);min-width:0}
+.dm div::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:linear-gradient(#8b7bff,#3ec6ff)}
+.dm i{font-style:normal;font-size:1.1rem}
+.dm span{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.dm b{font:800 1rem var(--disp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:520px){.dm{grid-template-columns:1fr}.dm div{grid-template-columns:auto 1fr;align-items:center;column-gap:10px}.dm i{grid-row:span 2}}
+/* ===== kartu mapel bagus ===== */
+.pick{background:radial-gradient(90% 60% at 85% 0%,rgba(255,255,255,.38),transparent 60%),radial-gradient(80% 60% at 0% 100%,rgba(0,0,0,.35),transparent 65%),linear-gradient(155deg,var(--c1),var(--c2));box-shadow:0 34px 60px -24px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.18) inset,0 2px 0 rgba(255,255,255,.5) inset}
+.pick .gl{top:112px;right:auto;left:50%;transform:translateX(-50%);font-size:6.4rem;opacity:.12;letter-spacing:-.06em}
+.pick .no{position:absolute;right:20px;top:54px;z-index:1;font:800 .95rem var(--disp);opacity:.9}
+.pick .no small{font-size:.68rem;opacity:.6;font-weight:600}
+.pick .badge{top:20px}
+.pick .art{top:70px;width:124px;height:124px;box-shadow:0 0 0 8px rgba(255,255,255,.1),0 0 0 17px rgba(255,255,255,.06),0 24px 40px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.7)}
+.pick .art svg{width:70px;height:70px}
+.pick .tx{padding:56px 20px 20px;background:linear-gradient(transparent,rgba(0,0,0,.62) 50%)}
+.pick b{font-size:1.5rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.pick .meta{margin-bottom:12px}
+.pick .go{display:flex;align-items:center;justify-content:center;padding:9px;border-radius:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font:800 .82rem var(--body);letter-spacing:.03em}
+.pick.on .go{background:#fff;color:#14163a;border-color:#fff}
+.go em{font-style:normal;display:inline-flex;align-items:center;gap:6px}.go .g2{display:none}.pick.on .go .g1{display:none}.pick.on .go .g2{display:inline-flex}
+.pick::before{background:radial-gradient(120% 70% at 20% 0%,rgba(255,255,255,.35),transparent 55%),linear-gradient(115deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%) -150% 0/250% 100% no-repeat}
+.pick.on::before{animation:shine 2.6s ease-in-out infinite}
+@keyframes shine{to{background-position:0 0,250% 0}}
+.stage{height:400px}.pick{height:348px}
+@media(max-width:700px){.stage{height:388px}.pick{height:336px}}
+@media(prefers-reduced-motion:reduce){.pick.on::before{animation:none}}
+.ico{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:none}
+.dm i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(139,123,255,.18);color:#b9c2ff;margin-bottom:4px}
+.dm i .ico{width:20px;height:20px}
+.pick .meta i{display:inline-flex;align-items:center;gap:5px}.pick .meta .ico{width:.95em;height:.95em}
+.rb .ico{width:22px;height:22px}.pick .badge em{display:none;align-items:center;gap:4px}.pick.on .badge em{display:inline-flex}
+.pick.off{filter:grayscale(.9) brightness(.7)}.pick.off .go em{display:none}.pick.off .go::after{content:"Soal kelas ini belum tersedia";font-size:.76rem}
+</style>
+</head>
+<body>
+<header class="hdr"><div class="bm"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#1fa8e8"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><circle cx="21" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="21" cy="43" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="43" r="9" fill="#ffc83d"/><path d="M38.5 43.2l3.3 3.3 6-6.4" fill="none" stroke="#131737" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="bt"><div class="wm"><span class="a">CBT</span>Perpustakaan</div><div class="tag">Ujian Simulasi</div></div></div><div class="led" role="marquee"><span>UJIAN SIMULASI &nbsp;&bull;&nbsp; SELAMAT DATANG DI UJIAN SIMULASI &nbsp;&bull;&nbsp; </span></div></header>
+<main class="wrap">
+
+<section id="s-login" class="login">
+  <div class="hero"><div class="stripes"><i></i><i></i><i></i><i></i><i></i></div><h1>Ujian Simulasi</h1>
+    <p class="mute">Masuk dengan nama, kelas, dan token dari admin.</p>
+    <div class="facts"><div><b>25</b>soal</div><div><b>30</b>menit</div><div><b>5</b>kesempatan</div></div>
+  </div>
+  <div class="card dz">
+    <h2 id="lt">Masuk ujian</h2>
+    <div id="pm"><label for="nama">Nama lengkap</label><input id="nama" type="text" autocomplete="name">
+    <label for="kelas">Kelas</label><input id="kelas" type="text" placeholder="Khusus SMP: 7A, 8B, 9C" maxlength="3" autocapitalize="characters">
+    <div id="tw"><label for="token">Token ujian</label><input id="token" type="text" autocomplete="off" placeholder="Minta ke admin"></div><div id="aw" class="hide"><label for="adm">Kode admin</label><input id="adm" type="password" inputmode="numeric" autocomplete="off" placeholder="Kode admin"></div>
+    <p class="err" id="err" role="alert"></p>
+    <button class="btn pri" id="go" style="width:100%">Masuk</button><p class="mute" style="font-size:.88rem;margin:14px 0 0">Belum punya token? Minta ke admin.</p></div>
+    
+  </div>
+</section>
+
+<section id="s-intro" class="hide" style="max-width:640px;margin:6vh auto 0">
+  <div class="card dz">
+    <div class="stripes"><i></i><i></i><i></i><i></i><i></i></div>
+    <h2 id="hi">Halo</h2>
+    <p class="mute">Ujian Simulasi · 25 soal · 30 menit</p>
+    <div class="facts"><div><b>25</b>soal</div><div><b>30</b>menit</div><div><b>5</b>kesempatan</div></div>
+    <ul class="rules">
+      <li><b>Bahasa Inggris dilarang diterjemahkan.</b> Memakai terjemahan otomatis dihitung pelanggaran. Setelah 3 kali, nilai menjadi 0.</li>
+      <li><b>Dilarang keluar dari web.</b> Pindah tab, pindah aplikasi, atau menutup halaman dihitung pelanggaran.</li>
+      <li><b>Dilarang menyontek.</b> Menyalin soal, klik kanan, mencetak, screenshot, atau membuka alat pengembang dihitung pelanggaran.</li>
+      <li><b>Dilarang memakai jendela mengambang</b> untuk mencari jawaban. Alarm akan berbunyi dan kamu dicatat. Setelah 4 kali, nilai menjadi 0.</li>
+      <li>Setiap pelanggaran memunculkan peringatan dan alarm <b>titititit</b> yang bunyi terus sampai kamu kembali ke web ujian.</li>
+      <li>Ada 5 kesempatan pelanggaran umum. Jika habis, nilai menjadi 0. Waktu tetap berjalan walau kamu keluar halaman.</li>
+    </ul>
+    <label class="agree"><input type="checkbox" id="agree"><span>Saya sudah membaca dan menyetujui semua aturan di atas. (Bisa dicentang setelah 5 detik.)</span></label><button class="btn pri" id="start" disabled>Mulai ujian</button> <button class="btn" id="outi">Keluar</button>
+  </div>
+</section>
+
+<section id="s-sub" class="hide" style="max-width:860px;margin:6vh auto 0">
+  <div class="card dz">
+    <div class="stripes"><i></i><i></i><i></i><i></i><i></i></div>
+    <h2 id="dashhi">Dashboard</h2><div class="dm" id="dashmeta"></div>
+    <div id="subs"></div>
+    <div class="row" style="justify-content:flex-start"><button class="btn pri" id="gosub" disabled>Mulai ujian</button><button class="btn" id="bksub">Kembali</button></div>
+  </div>
+</section>
+
+<section id="s-exam" class="hide">
+  <div class="top">
+    <div class="bar"><div><b id="who"></b><div class="mute" id="pg" style="font-size:.85rem"></div><div class="pips" id="pips" aria-label="Sisa kesempatan"></div></div><div class="timer" id="tm" aria-live="off">30:00</div></div>
+    <div class="prog"><i id="pb"></i></div>
+  </div>
+  <div class="exam">
+    <div class="card">
+      <div class="mute" id="qn"></div>
+      <div class="qtext" id="qt" dir="auto"></div>
+      <div id="opts" role="radiogroup" aria-label="Pilihan jawaban"></div>
+      <div class="nav">
+        <button class="btn" id="prev">Sebelumnya</button>
+        <button class="btn" id="flag">Tandai ragu</button>
+        <button class="btn pri" id="next">Berikutnya</button>
+      </div>
+    </div>
+    <aside class="card side">
+      <h2>Daftar soal</h2>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span class="a">Terjawab</span><span class="f">Ragu</span><span>Kosong</span></div>
+      <button class="btn" id="finish" style="width:100%;margin-top:14px" disabled>Kumpulkan soal</button><p class="mute" style="font-size:.85rem;margin:8px 0 0">Tombol hijau setelah semua soal terjawab.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="s-res" class="hide" style="max-width:720px;margin:4vh auto 0">
+  <div class="card dz">
+    <p class="mute" id="rwho"></p>
+    <div class="score"><span id="rs">0</span><span class="mute" style="font-size:1.4rem;font-weight:600">/100</span></div>
+    <div class="stats"><div><b id="rb">0</b><br>Benar</div><div><b id="rw">0</b><br>Salah</div><div><b id="rk">0</b><br>Kosong</div></div>
+    <button class="btn pri" id="again">Keluar</button> <button class="btn" id="other">Pilih pelajaran lain</button>
+  </div>
+  <div class="rev" id="rev"></div>
+</section>
+<section id="s-own" class="hide" style="max-width:720px;margin:4vh auto 0">
+  <div class="card" style="margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;position:relative">
+      <h2 style="margin:0">Panel owner</h2>
+      <button class="btn" id="dots" aria-label="Menu token" aria-expanded="false" style="font-size:1.4rem;line-height:1;padding:6px 14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></button>
+      <div id="menu" class="menu hide">
+        <label for="newtok" style="margin-top:0">Token ujian baru</label>
+        <input id="newtok" type="text" autocomplete="off" placeholder="Min. 4 karakter">
+        <p class="err" id="omsg" style="color:var(--ok)"></p>
+        <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn pri" id="settoken">Simpan token</button></div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><label for="ulk" style="margin-top:0">Buka kunci login</label><input id="ulk" type="text" placeholder="Nama peserta"><div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="unlock">Buka kunci</button></div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:flex-start"><button class="btn pri" id="oexam">Kerjakan ujian simulasi</button> <button class="btn" id="olog">Keluar</button></div>
+  </div>
+  <h2>Riwayat banned</h2>
+  <div id="oban" class="mute" style="margin-bottom:16px"></div>
+  <h2>Riwayat selesai ujian simulasi</h2>
+  <div id="odone" class="mute" style="margin-bottom:16px"></div>
+  <h2>Riwayat peserta</h2>
+  <div id="olist" class="mute"></div>
+</section>
+<footer class="foot">Ujian Simulasi</footer>
+</main>
+<div id="toast" class="toast hide" role="alert"></div>
+
+
+<dialog id="wdlg"><h2>Pelanggaran terdeteksi</h2><p id="wmsg" class="mute"></p><div class="row"><button class="btn pri" id="wok">Saya mengerti, lanjut</button></div></dialog>
+<dialog id="dlg">
+  <h2>Kumpulkan soal?</h2>
+  <p id="dmsg" class="mute"></p>
+  <div class="row"><button class="btn" id="no">Kembali</button><button class="btn pri" id="yes">Kumpulkan</button></div>
+</dialog>
+
+<script>
+let Q=[];
+const P=a=>a.map(r=>{const x=r.split("|");return{q:x[0],o:x.slice(1,5),a:+x[5]}});
+const SUBJ={
+indo:{n:"Bahasa Indonesia",i:"ID",q:P(["Unsur berita yang menjawab pertanyaan “mengapa” adalah …|Why|Who|Where|When|0",
+"Banjir sering terjadi di kota besar. Penyebabnya adalah sampah yang menyumbat sungai. Kalimat utama paragraf itu terletak di …|Awal paragraf|Akhir paragraf|Tengah paragraf|Tidak ada|0",
+"Sinonim kata “akurat” adalah …|Tepat|Samar|Cepat|Kuat|0",
+"Majas pada “Matahari tersenyum menyambut pagi” adalah …|Personifikasi|Hiperbola|Metafora|Ironi|0",
+"Kata baku yang benar adalah …|Apotek|Apotik|Apotic|Apotèk|0",
+"Kata baku yang benar adalah …|Praktik|Praktek|Praktëk|Prakthik|0",
+"Tujuan utama teks iklan adalah …|Menawarkan produk kepada pembaca|Menceritakan pengalaman|Menjelaskan langkah|Menghibur|0",
+"Kalimat yang bersifat ajakan (persuasif) adalah …|Ayo, jaga kebersihan sungai demi masa depan kita!|Sungai itu panjang.|Kemarin sungai meluap.|Sungai mengalir ke laut.|0",
+"Pilihan kata yang dipakai penyair dalam puisi disebut …|Diksi|Rima|Tipografi|Majas|0",
+"Kalimat bermajas hiperbola adalah …|Suaranya menggelegar membelah langit.|Ia berlari cepat.|Adik bermain bola.|Rumahnya besar.|0",
+"Urutan alur cerpen yang benar adalah …|Pengenalan, konflik, klimaks, penyelesaian|Klimaks, pengenalan, konflik, penyelesaian|Konflik, penyelesaian, pengenalan, klimaks|Penyelesaian, konflik, pengenalan, klimaks|0",
+"Pesan moral yang ingin disampaikan pengarang disebut …|Amanat|Tema|Latar|Alur|0",
+"Tokoh yang berwatak baik dan disukai pembaca disebut tokoh …|Protagonis|Antagonis|Tritagonis|Figuran|0",
+"Ciri kebahasaan teks prosedur adalah banyak menggunakan kalimat …|Perintah|Tanya|Seru|Majemuk berlawanan|0",
+"Penulisan kalimat tanya yang benar adalah …|Ke mana kamu pergi kemarin?|Kemana kamu pergi kemarin.|Ke mana kamu pergi kemarin!|Kemana, kamu pergi kemarin|0",
+"Ibu pulang terlambat ___ jalanan macet.|karena|meskipun|agar|kemudian|0",
+"Kalimat efektif adalah …|Kami membahas masalah itu.|Kami membahas tentang masalah itu.|Kami telah membahas tentang masalah-masalah itu semua.|Kami membahaskan akan masalah itu.|0",
+"Makna idiom “tangan panjang” adalah …|Suka mencuri|Rajin bekerja|Pandai menulis|Suka menolong|0",
+"Kalimat tanggapan yang menyatakan setuju adalah …|Saya sependapat dengan usul itu.|Saya menolak usul itu.|Usul itu tidak masuk akal.|Saya tidak setuju.|0",
+"Kalimat opini adalah …|Film itu sangat bagus.|Film itu berdurasi 90 menit.|Film itu dirilis tahun 2024.|Film itu berjudul Laskar.|0",
+"Bentuk kata benda dari “tanam” dengan imbuhan pe-an adalah …|Penanaman|Pentanaman|Pemanaman|Pengtanaman|0",
+"Ringkasan isi sebuah cerita disebut …|Sinopsis|Prolog|Epilog|Resensi|0",
+"Kalimat tak langsung adalah …|Dia berkata bahwa besok libur.|Dia berkata, “Besok libur.”|“Besok libur,” kata dia.|Dia: “Besok libur.”|0",
+"Teks yang menjelaskan proses terjadinya gejala alam disebut teks …|Eksplanasi|Prosedur|Deskripsi|Narasi|0",
+"Ciri teks laporan hasil observasi adalah …|Objektif dan berdasarkan fakta|Berisi opini penulis|Berisi ajakan|Berisi rayuan|0"]),graded:true},
+ipa:{n:"Ilmu Pengetahuan Alam",i:"IPA",q:P(["Andi bersepeda 18 km dalam 1,5 jam. Kecepatan rata-ratanya …|12 km/jam|27 km/jam|9 km/jam|16,5 km/jam|0",
+"Mobil diam lalu dipercepat 2 m/s² selama 5 s. Kecepatannya …|10 m/s|2,5 m/s|7 m/s|25 m/s|0",
+"Balok 5 kg didorong gaya 20 N tanpa gesekan. Percepatannya …|4 m/s²|0,25 m/s²|100 m/s²|15 m/s²|0",
+"Lemari didorong 150 N sejauh 4 m. Usaha yang dilakukan …|600 J|37,5 J|154 J|146 J|0",
+"Tuas: beban 600 N, lengan beban 0,5 m, lengan kuasa 1,5 m. Kuasa yang diperlukan …|200 N|1.800 N|300 N|100 N|0",
+"Tekanan hidrostatis pada kedalaman 5 m (ρ = 1.000 kg/m³, g = 10 m/s²) adalah …|50.000 Pa|5.000 Pa|500.000 Pa|2.000 Pa|0",
+"Kapal baja dapat terapung karena berlaku hukum …|Archimedes|Pascal|Boyle|Newton III|0",
+"Dongkrak hidrolik: A1 = 5 cm², A2 = 100 cm², F1 = 20 N. Gaya F2 …|400 N|1 N|100 N|20 N|0",
+"Bunyi berfrekuensi 440 Hz dan cepat rambat 330 m/s memiliki panjang gelombang …|0,75 m|1,33 m|110 m|145.200 m|0",
+"Sifat bayangan pada cermin datar adalah …|Maya, tegak, sama besar|Nyata, terbalik|Maya, diperkecil|Nyata, diperbesar|0",
+"Enzim amilase dalam ludah mengubah …|Amilum menjadi maltosa|Protein menjadi asam amino|Lemak menjadi asam lemak|Maltosa menjadi sukrosa|0",
+"Penyerapan sari makanan terutama terjadi di …|Usus halus|Lambung|Usus besar|Kerongkongan|0",
+"Urutan jalur udara pernapasan yang benar adalah …|Hidung, faring, laring, trakea, bronkus, alveolus|Hidung, laring, faring, bronkus, trakea, alveolus|Hidung, trakea, faring, laring, bronkus, alveolus|Hidung, faring, trakea, laring, alveolus, bronkus|0",
+"Pertukaran O₂ dan CO₂ di alveolus terjadi secara …|Difusi|Osmosis|Transpor aktif|Fagositosis|0",
+"Golongan darah penerima universal adalah …|AB|O|A|B|0",
+"Jalur peredaran darah kecil adalah …|Bilik kanan, paru-paru, serambi kiri|Bilik kiri, tubuh, serambi kanan|Serambi kiri, paru-paru, bilik kanan|Bilik kanan, tubuh, serambi kiri|0",
+"Fungsi nefron pada ginjal adalah …|Menyaring darah membentuk urine|Menghasilkan insulin|Menyimpan urine|Mencerna lemak|0",
+"Pewarna alami makanan yang berasal dari kunyit adalah …|Kuning|Merah rhodamin|Biru tartrazin|Hijau sintetis|0",
+"Bandul bergetar 40 kali dalam 20 s. Frekuensinya …|2 Hz|0,5 Hz|20 Hz|800 Hz|0",
+"Contoh gelombang longitudinal adalah …|Bunyi|Cahaya|Gelombang tali|Gelombang radio|0",
+"Bunyi berfrekuensi di atas 20.000 Hz disebut …|Ultrasonik|Infrasonik|Audiosonik|Supersonik|0",
+"Pisau tajam memotong lebih mudah karena …|Luas bidang tekan kecil sehingga tekanan besar|Massanya lebih besar|Gaya gravitasinya kecil|Tidak ada gesekan|0",
+"Penumpang bus terdorong ke depan saat bus mengerem mendadak. Peristiwa ini sesuai hukum …|Newton I (kelembaman)|Newton II|Newton III|Gravitasi Newton|0",
+"Sendi pada siku termasuk sendi …|Engsel|Pelana|Putar|Peluru|0",
+"Buah 2 kg jatuh dari ketinggian 5 m (g = 10 m/s²). Energi kinetik sebelum menyentuh tanah …|100 J|10 J|50 J|200 J|0"]),graded:true,g7:P(["Satuan SI untuk panjang adalah …|Meter|Kilogram|Detik|Newton|0",
+"Alat untuk mengukur massa benda adalah …|Neraca|Termometer|Jangka sorong|Stopwatch|0",
+"27 °C sama dengan … Kelvin.|300 K|246 K|27 K|327 K|0",
+"Perubahan wujud padat menjadi cair disebut …|Melebur|Membeku|Menguap|Menyublim|0",
+"Kalor untuk memanaskan 0,5 kg air dari 20 °C ke 60 °C (c = 4.200 J/kg°C) adalah …|84.000 J|42.000 J|168.000 J|8.400 J|0",
+"Perpindahan kalor tanpa zat perantara disebut …|Radiasi|Konduksi|Konveksi|Evaporasi|0",
+"Contoh campuran homogen adalah …|Larutan gula|Air dan pasir|Air dan minyak|Tanah dan air|0",
+"Contoh perubahan kimia adalah …|Kertas terbakar|Es mencair|Gula larut|Air menguap|0",
+"Ciri mamalia adalah …|Menyusui anaknya|Bertelur dan bersisik|Berdarah dingin|Bernapas dengan insang|0",
+"Ciri tumbuhan monokotil adalah …|Akar serabut|Akar tunggang|Daun menyirip|Memiliki kambium|0",
+"Rantai makanan: padi → tikus → ular → elang. Ular adalah konsumen tingkat …|II|I|III|IV|0",
+"Makhluk hidup yang membuat makanan sendiri disebut …|Produsen|Konsumen|Pengurai|Predator|0",
+"Contoh hubungan mutualisme adalah …|Lebah dan bunga|Kutu dan anjing|Benalu dan pohon|Singa dan rusa|0",
+"Komponen abiotik ekosistem adalah …|Cahaya matahari|Belalang|Jamur|Bakteri|0",
+"Rotasi Bumi menyebabkan …|Pergantian siang dan malam|Gerhana|Gerak semu tahunan Matahari|Pergantian tahun|0",
+"Revolusi Bumi menyebabkan …|Gerak semu tahunan Matahari|Pergantian siang dan malam|Pasang surut|Gerhana bulan|0",
+"Gerhana bulan terjadi saat …|Bumi berada di antara Matahari dan Bulan|Bulan di antara Matahari dan Bumi|Matahari di antara Bumi dan Bulan|Bulan baru|0",
+"Planet terbesar di tata surya adalah …|Jupiter|Saturnus|Bumi|Mars|0",
+"Kipas angin mengubah energi …|Listrik menjadi gerak|Kimia menjadi listrik|Gerak menjadi listrik|Cahaya menjadi kimia|0",
+"Sumber energi terbarukan adalah …|Surya|Batu bara|Minyak bumi|Gas alam|0",
+"Benda 5 kg pada ketinggian 4 m (g = 10 m/s²) memiliki energi potensial …|200 J|20 J|50 J|9,8 J|0",
+"Benda bermassa 300 g bervolume 100 cm³ memiliki massa jenis …|3 g/cm³|0,33 g/cm³|30 g/cm³|400 g/cm³|0",
+"Contoh unsur adalah …|Oksigen|Air|Garam dapur|Gula|0",
+"Organel yang hanya ada pada sel tumbuhan adalah …|Kloroplas|Mitokondria|Ribosom|Inti sel|0",
+"Lensa okuler 10× dan objektif 40×. Perbesaran mikroskop …|400 kali|50 kali|4 kali|1.000 kali|0"]),g9:P(["V = 12 V dan R = 4 Ω. Kuat arus …|3 A|48 A|8 A|0,33 A|0",
+"Resistor 2 Ω, 3 Ω, dan 5 Ω disusun seri. Hambatan totalnya …|10 Ω|30 Ω|2,5 Ω|1 Ω|0",
+"Resistor 6 Ω dan 3 Ω disusun paralel. Hambatan penggantinya …|2 Ω|9 Ω|4,5 Ω|18 Ω|0",
+"Lampu 20 W menyala 10 jam menggunakan energi …|0,2 kWh|2 kWh|20 kWh|0,02 kWh|0",
+"Transformator: Np = 1.000, Ns = 200, Vp = 220 V. Tegangan sekunder …|44 V|1.100 V|220 V|4,4 V|0",
+"Trafo step-down memiliki …|Lilitan sekunder lebih sedikit dari primer|Lilitan sekunder lebih banyak|Lilitan sama|Tanpa inti besi|0",
+"Prinsip kerja motor listrik adalah …|Gaya Lorentz|Induksi elektromagnetik|Efek Doppler|Gaya gesek|0",
+"Prinsip kerja generator adalah …|Induksi elektromagnetik|Gaya Lorentz|Elektrolisis|Fotosintesis|0",
+"Kutub magnet yang senama akan …|Tolak-menolak|Tarik-menarik|Tidak berinteraksi|Menyatu|0",
+"Persilangan Tt × Tt menghasilkan rasio fenotipe …|3 : 1|1 : 1|1 : 2 : 1|9 : 3 : 3 : 1|0",
+"Persilangan Bb × bb menghasilkan keturunan bb sebesar …|50%|25%|75%|100%|0",
+"Rasio fenotipe F2 persilangan dihibrid Mendel adalah …|9 : 3 : 3 : 1|3 : 1|1 : 2 : 1|1 : 1 : 1 : 1|0",
+"Pada DNA, adenin berpasangan dengan …|Timin|Sitosin|Guanin|Urasil|0",
+"Mutasi adalah …|Perubahan materi genetik|Perkawinan antar spesies|Proses fotosintesis|Proses pencernaan|0",
+"Contoh bioteknologi konvensional adalah …|Pembuatan tempe|Kloning domba|Kultur jaringan|Rekayasa genetika|0",
+"Fertilisasi pada manusia terjadi di …|Tuba fallopi|Rahim|Vagina|Ovarium|0",
+"Hormon yang dihasilkan testis adalah …|Testosteron|Estrogen|Progesteron|Insulin|0",
+"Pada siklus menstruasi 28 hari, ovulasi terjadi sekitar …|Hari ke-14|Hari ke-1|Hari ke-7|Hari ke-28|0",
+"Gas utama penyebab efek rumah kaca adalah …|Karbon dioksida|Oksigen|Nitrogen|Helium|0",
+"Atom bernomor atom 11 dan nomor massa 23 memiliki neutron …|12|11|23|34|0",
+"Atom yang melepas elektron menjadi ion …|Positif|Negatif|Netral|Radioaktif|0",
+"Larutan pH 10 bersifat …|Basa|Asam|Netral|Garam|0",
+"Galaksi tempat tata surya berada adalah …|Bima Sakti|Andromeda|Triangulum|Magellan|0",
+"Alat pencatat getaran gempa adalah …|Seismograf|Barometer|Termometer|Anemometer|0",
+"Dua benda bermuatan sama akan …|Tolak-menolak|Tarik-menarik|Tidak berinteraksi|Melebur|0"])},
+ips:{n:"Ilmu Pengetahuan Sosial",i:"IPS",q:P(["VOC didirikan pada tahun …|1602|1799|1619|1830|0",
+"Tujuan utama monopoli perdagangan VOC adalah menguasai perdagangan …|Rempah-rempah|Tekstil|Kopi saja|Garam|0",
+"Sistem Tanam Paksa (Cultuurstelsel) diterapkan oleh …|Van den Bosch|Daendels|Raffles|Van Deventer|0",
+"Jalan Anyer–Panarukan dibangun pada masa pemerintahan …|Daendels|Raffles|Van den Bosch|Van der Capellen|0",
+"Tokoh pencetus gagasan Politik Etis adalah …|C. Th. van Deventer|Daendels|Raffles|Van den Bosch|0",
+"Budi Utomo didirikan pada tanggal …|20 Mei 1908|28 Oktober 1928|17 Agustus 1945|9 Desember 1912|0",
+"Tiga Serangkai pendiri Indische Partij adalah Douwes Dekker, Cipto Mangunkusumo, dan …|Suwardi Suryaningrat|Soekarno|Moh. Hatta|Tjokroaminoto|0",
+"Sumpah Pemuda diikrarkan pada …|28 Oktober 1928|20 Mei 1908|17 Agustus 1945|1 Juni 1945|0",
+"Jepang mulai menduduki Indonesia pada tahun …|1942|1945|1941|1943|0",
+"Organisasi militer bentukan Jepang yang beranggotakan pemuda Indonesia adalah …|PETA|KNIL|Volksraad|Budi Utomo|0",
+"Teks proklamasi dirumuskan di rumah …|Laksamana Maeda|Soekarno|Moh. Hatta|Ahmad Soebardjo|0",
+"Teks proklamasi diketik oleh …|Sayuti Melik|Soekarno|Moh. Hatta|Fatmawati|0",
+"Gotong royong membersihkan sungai merupakan bentuk interaksi sosial …|Kerja sama|Persaingan|Konflik|Kontravensi|0",
+"Semboyan Bhinneka Tunggal Ika terdapat dalam kitab …|Sutasoma|Negarakertagama|Pararaton|Arjunawiwaha|0",
+"Cara terbaik menyelesaikan konflik perbedaan pendapat adalah …|Musyawarah|Memaksakan kehendak|Menghindar|Mengancam|0",
+"Letak astronomis Indonesia adalah …|6° LU – 11° LS dan 95° BT – 141° BT|6° LS – 11° LU dan 95° BB – 141° BB|0° – 23,5° LU|11° LU – 6° LS dan 141° BT – 180° BT|0",
+"Hutan termasuk sumber daya alam yang …|Dapat diperbarui|Tidak dapat diperbarui|Habis sekali pakai|Hanya ada di laut|0",
+"Penduduk Indonesia paling padat berada di pulau …|Jawa|Kalimantan|Papua|Sulawesi|0",
+"Perpindahan penduduk dari desa ke kota disebut …|Urbanisasi|Transmigrasi|Emigrasi|Imigrasi|0",
+"Faktor penarik urbanisasi adalah …|Banyak lapangan kerja di kota|Lahan pertanian sempit|Bencana alam di desa|Upah desa rendah|0",
+"Koperasi dikenal sebagai … perekonomian Indonesia.|Soko guru|Atap|Pagar|Hiasan|0",
+"Pasar tradisional ditandai dengan adanya …|Tawar-menawar langsung|Harga tetap|Pembayaran daring|Tanpa penjual|0",
+"Perubahan sosial yang berlangsung lama dan bertahap disebut …|Evolusi|Revolusi|Reformasi|Restorasi|0",
+"Perlawanan Pangeran Diponegoro berlangsung pada …|1825–1830|1817|1873–1904|1859–1863|0",
+"Agresi Militer Belanda I dilancarkan pada tahun …|1947|1945|1949|1950|0"]),graded:true},
+jawa:{n:"Bahasa Jawa",i:"JW",q:P(["Tembung “turu” ing basa krama inggil yaiku …|Sare|Tilem|Lenggah|Dhahar|0",
+"Tembung “mangan” ing basa krama inggil yaiku …|Dhahar|Nedha|Maem|Kula|0",
+"Ukara kang trep: “Bapak … Surabaya.”|tindak|lunga|kesah|mlaku|0",
+"Tembung “kowe” ing krama inggil yaiku …|Panjenengan|Sampeyan|Sliramu|Dika|0",
+"Tembang Pocung nduweni watak …|Santai lan guyonan|Sedhih|Galak|Asmara|0",
+"Guru gatra tembang Pocung cacahe …|4|6|9|10|0",
+"Guru gatra tembang Sinom cacahe …|9|4|6|7|0",
+"Tembang Kinanthi nduweni watak …|Tresna asih|Murka|Sedhih|Jenaka|0",
+"Tembang Durma nduweni watak …|Galak lan nesu|Tresna|Gembira|Prihatin|0",
+"Sandhangan swara “i” diarani …|Wulu|Suku|Taling|Pepet|0",
+"Sandhangan swara “u” diarani …|Suku|Wulu|Pepet|Layar|0",
+"Aksara murda cacahe …|8|5|20|10|0",
+"Aksara swara cacahe …|5|4|8|20|0",
+"Paribasan “Adigang adigung adiguna” tegese …|Mamerake kekuwatan, pangkat, lan kapinteran|Gotong royong|Setya marang janji|Nyambut gawe tenanan|0",
+"Paribasan “Kebo nusu gudel” tegese …|Wong tuwa sinau marang wong enom|Kebo ngombe susu|Wong cilik mbantu wong gedhe|Wong sugih nulung wong mlarat|0",
+"Paribasan “Becik ketitik ala ketara” tegese …|Kabecikan lan kaluputan bakal katon|Wong becik tansah rukun|Ala lan becik padha wae|Wong ala kudu diusir|0",
+"Pandhawa kang paling tuwa yaiku …|Yudhistira|Bima|Arjuna|Nakula|0",
+"Pandhawa kang kondhang kuwat banget yaiku …|Bima|Arjuna|Sadewa|Nakula|0",
+"Guru wilangan gatra kapisan tembang Pocung yaiku …|12|8|10|7|0",
+"Wayang purwa nyritakake epos …|Ramayana lan Mahabharata|Malin Kundang|Roro Jonggrang|Timun Mas|0",
+"Tembung “omah” ing basa krama inggil yaiku …|Dalem|Griya|Wisma|Papan|0",
+"Tembung “nulis” ing basa krama yaiku …|Nyerat|Ngangge|Nggambar|Maos|0",
+"Geguritan yaiku …|Puisi Jawa modern|Crita cekak|Tembang macapat|Wayang kulit|0",
+"Guru lagu gatra pungkasan tembang Kinanthi yaiku …|i|u|a|e|0",
+"Putra-putrane Semar kang kondhang yaiku …|Gareng, Petruk, Bagong|Bima, Arjuna, Nakula|Duryudana, Dursasana, Sengkuni|Kresna, Baladewa, Abimanyu|0"])},
+inggris:{n:"Bahasa Inggris",i:"EN",q:P(["She ___ to Bali last holiday.|went|goes|go|going|0",
+"While I ___ TV, my mother called me.|was watching|watched|watch|am watching|0",
+"Mount Everest is ___ than Mount Fuji.|higher|more high|highest|the higher|0",
+"She is the ___ student in our class.|smartest|smarter|more smart|smart|0",
+"You ___ wear a helmet when riding a motorbike.|must|can’t|might not|would|0",
+"NOTICE: The library will be closed on Monday because of renovation. Please return your books before Saturday. What should students do before Saturday?|Return their books|Buy new books|Clean the library|Join the renovation|0",
+"Dina’s cat is called Momo. It has white fur and blue eyes. What color are Momo’s eyes?|Blue|White|Black|Green|0",
+"“Dina’s cat is called Momo. It has white fur and blue eyes.” This is a … text.|descriptive|recount|procedure|narrative|0",
+"The correct order of a recount text is …|orientation, events, re-orientation|events, orientation, conclusion|conclusion, events, orientation|orientation, conclusion, events|0",
+"Which sentence is a procedure text?|Mix the flour and the eggs.|He mixed the flour yesterday.|I like making cakes.|They are mixing the flour.|0",
+"“You are invited to my birthday party on Sunday at 3 p.m.” The purpose of the text is to …|invite someone|sell a product|report an accident|describe a person|0",
+"Which expression asks for someone’s opinion?|What do you think about this plan?|Thanks a lot.|See you later.|I’m sorry.|0",
+"Which expression shows disagreement?|I don’t think so.|I agree.|That’s right.|Exactly.|0",
+"She ___ her homework yesterday.|finished|finish|finishes|is finishing|0",
+"The past form of “buy” is …|bought|buyed|boughten|buys|0",
+"They ___ playing football when it rained.|were|was|did|are|0",
+"The meeting starts ___ 9 a.m.|at|on|in|by|0",
+"There isn’t ___ water in the bottle.|much|many|a few|several|0",
+"I was tired, ___ I finished the work.|but|because|unless|or|0",
+"“Generous” means …|willing to give|selfish|angry|shy|0",
+"“First, wash the rice. Then, put it into the rice cooker. Finally, press the button.” What do we do after washing the rice?|Put it into the rice cooker|Press the button|Serve it|Cut vegetables|0",
+"The window ___ by Tom.|was broken|broke|breaks|is break|0",
+"If you study hard, you ___ the test.|will pass|would pass|passed|have passed|0",
+"“Last Sunday, my family visited Grandma. We cooked together and played cards. I felt happy.” How did the writer feel?|Happy|Tired|Angry|Sad|0",
+"She can swim, ___?|can’t she|isn’t she|doesn’t she|won’t she|0"]),graded:true},
+pjok:{n:"PJOK",i:"PJ",q:P(["Denyut nadi maksimal anak 14 tahun (220 − usia) adalah …|206 kali/menit|220 kali/menit|194 kali/menit|180 kali/menit|0",
+"Tinggi ring basket dari lantai adalah …|3,05 m|2,43 m|2,85 m|3,50 m|0",
+"Ukuran lapangan bola voli adalah …|18 × 9 m|20 × 10 m|15 × 8 m|24 × 12 m|0",
+"Tinggi net bola voli putri adalah …|2,24 m|2,43 m|2,10 m|2,50 m|0",
+"Panjang zona pergantian tongkat estafet adalah …|20 m|10 m|30 m|15 m|0",
+"Prinsip pertolongan cedera RICE singkatan dari …|Rest, Ice, Compression, Elevation|Run, Ice, Care, Exercise|Rest, Inject, Cool, Elevate|Relax, Ice, Cover, Exercise|0",
+"Gaya tolak peluru yang umum dipakai adalah …|O’Brien|Fosbury|Gunting|Straddle|0",
+"IMT seseorang 60 kg dengan tinggi 1,5 m adalah …|26,7|40|24|30|0",
+"Kemampuan otot mengatasi beban disebut …|Kekuatan|Kelincahan|Kelentukan|Keseimbangan|0",
+"Durasi pertandingan sepak bola resmi (tanpa tambahan) …|2 × 45 menit|2 × 30 menit|4 × 15 menit|2 × 40 menit|0",
+"Lapangan bulu tangkis ganda berukuran lebar …|6,1 m|5,18 m|7 m|4,5 m|0",
+"Pelanggaran membawa bola tanpa memantulkan di basket disebut …|Traveling|Double dribble|Charging|Blocking|0",
+"Latihan daya tahan jantung paru yang baik adalah …|Lari jarak jauh|Tolak peluru|Lompat tinggi|Lempar cakram|0",
+"Dalam lompat jauh, urutan gerakan yang benar adalah …|Awalan, tolakan, melayang, mendarat|Tolakan, awalan, mendarat, melayang|Awalan, melayang, tolakan, mendarat|Mendarat, awalan, tolakan, melayang|0",
+"Zat gizi sumber energi utama tubuh adalah …|Karbohidrat|Vitamin|Mineral|Air|0",
+"Pada permainan voli, set penentu dimainkan sampai …|15 poin|25 poin|21 poin|30 poin|0",
+"Pemanasan sebelum olahraga bertujuan …|Menyiapkan otot dan mencegah cedera|Menurunkan suhu tubuh|Mengurangi denyut nadi|Menambah kelelahan|0",
+"Kemampuan mengubah arah tubuh dengan cepat disebut …|Kelincahan|Kekuatan|Daya tahan|Kelentukan|0",
+"Senam lantai yang dilakukan berguling ke depan disebut …|Guling depan|Kayang|Meroda|Lenting|0",
+"Jumlah pemain inti sepak bola per tim adalah …|11|9|7|12|0",
+"Gaya lompat tinggi yang paling modern adalah …|Fosbury flop|Gunting|Guling sisi|Straddle|0",
+"Start yang digunakan pada lari jarak pendek adalah …|Start jongkok|Start berdiri|Start melayang|Start duduk|0",
+"Gaya renang yang umumnya paling cepat adalah …|Gaya bebas|Gaya dada|Gaya kupu-kupu|Gaya punggung|0",
+"Satu gram lemak menghasilkan energi sekitar …|9 kkal|4 kkal|7 kkal|2 kkal|0",
+"Lari 100 meter termasuk lari jarak …|Pendek|Menengah|Jauh|Maraton|0"])},
+info:{n:"TIK",i:"TIK",q:P(["Bilangan biner 1101 sama dengan desimal …|13|11|15|12|0",
+"Desimal 25 dalam biner adalah …|11001|10101|11010|10011|0",
+"Hasil gerbang logika AND dengan input 1 dan 0 adalah …|0|1|10|Tidak ada|0",
+"Hasil gerbang logika XOR dengan input 1 dan 1 adalah …|0|1|2|10|0",
+"Simbol belah ketupat pada flowchart menunjukkan …|Keputusan|Proses|Mulai/selesai|Input/output|0",
+"1 KB sama dengan …|1024 byte|1000 bit|1024 bit|100 byte|0",
+"2 MB sama dengan … KB.|2048|2000|1024|200|0",
+"Alamat IP 192.168.1.1 termasuk kelas …|C|A|B|D|0",
+"Fungsi DNS adalah …|Menerjemahkan nama domain menjadi alamat IP|Mengenkripsi data|Menyimpan situs|Mempercepat internet|0",
+"Memori yang isinya hilang saat komputer mati adalah …|RAM|ROM|Hard disk|SSD|0",
+"Tipe data untuk bilangan bulat adalah …|Integer|String|Boolean|Float|0",
+"Hasil dari perulangan: jumlah = 0; for i = 1 to 5: jumlah = jumlah + i adalah …|15|10|5|20|0",
+"Kunci unik pada tabel basis data disebut …|Primary key|Foreign key|Field|Record|0",
+"Penipuan dengan menyamar jadi pihak resmi lewat tautan palsu disebut …|Phishing|Spamming|Hacking|Cracking|0",
+"Protokol aman yang mengenkripsi akses web adalah …|HTTPS|HTTP|FTP|SMTP|0",
+"Rumus spreadsheet untuk menjumlahkan A1 sampai A3 adalah …|=SUM(A1:A3)|=ADD(A1,A3)|=TOTAL(A1-A3)|=PLUS(A1:A3)|0",
+"Perangkat lunak yang mengatur sumber daya komputer adalah …|Sistem operasi|Aplikasi kantor|Browser|Antivirus|0",
+"Tindakan menyebarkan ejekan di media sosial secara berulang disebut …|Cyberbullying|Browsing|Streaming|Blogging|0",
+"Hasil dari 5 MOD 2 adalah …|1|0|2|2,5|0",
+"Urutan langkah penyelesaian masalah secara sistematis disebut …|Algoritma|Hardware|Protokol|Domain|0",
+"Bilangan heksadesimal “F” sama dengan desimal …|15|16|14|10|0",
+"Struktur kontrol if–else termasuk …|Percabangan|Perulangan|Urutan|Deklarasi|0",
+"Jaringan komputer dalam satu gedung disebut …|LAN|WAN|MAN|PAN|0",
+"Perangkat lunak yang kodenya bebas dipelajari dan dimodifikasi disebut …|Open source|Proprietary|Shareware|Trial|0",
+"Format gambar yang mendukung latar transparan adalah …|PNG|JPG|DOCX|MP3|0"])},
+mtk:{n:"Matematika",i:"MTK",q:P(["Fungsi f(x) = 3x − 5. Nilai f(4) + f(−1) adalah …|−1|1|−9|15|0",
+"A = {1, 2, 3} dan B = {2, 4, 6, 8}. Banyak fungsi yang mungkin dari A ke B adalah …|64|81|12|7|0",
+"Garis y = 2x − 6 memotong sumbu X di titik …|(3, 0)|(0, 3)|(−6, 0)|(0, −6)|0",
+"Gradien garis 4x − 2y = 10 adalah …|2|−2|4|5|0",
+"Persamaan garis yang melalui (1, 2) dan sejajar y = 3x + 1 adalah …|y = 3x − 1|y = 3x + 2|y = −3x + 5|y = x/3 + 5/3|0",
+"Bu Rina membeli 2 kg apel dan 3 kg jeruk seharga Rp85.000. Bu Sari membeli 3 kg apel dan 1 kg jeruk seharga Rp75.000. Harga 1 kg jeruk adalah …|Rp15.000|Rp20.000|Rp10.000|Rp25.000|0",
+"Jumlah umur Ani dan Budi 38 tahun, selisihnya 6 tahun. Umur yang lebih tua adalah …|22 tahun|16 tahun|20 tahun|24 tahun|0",
+"Tangga 13 m bersandar di dinding, kaki tangga 5 m dari dinding. Tinggi dinding yang dicapai …|12 m|8 m|18 m|10 m|0",
+"Tiga bilangan yang merupakan sisi segitiga siku-siku adalah …|7, 24, 25|6, 7, 10|5, 6, 8|9, 12, 16|0",
+"Panjang diagonal persegi bersisi 10 cm adalah …|10√2 cm|20 cm|10 cm|5√2 cm|0",
+"Panjang busur dengan sudut pusat 90° dan r = 14 cm (π = 22/7) adalah …|22 cm|44 cm|11 cm|88 cm|0",
+"Luas juring dengan sudut pusat 60° dan r = 21 cm (π = 22/7) adalah …|231 cm²|462 cm²|154 cm²|66 cm²|0",
+"Sudut keliling 35° menghadap busur yang sama dengan sudut pusat sebesar …|70°|35°|140°|17,5°|0",
+"Roda berdiameter 70 cm berputar 100 kali. Jarak tempuhnya … (π = 22/7)|220 m|140 m|22 m|440 m|0",
+"Prisma alas segitiga siku-siku (3, 4, 5 cm) dengan tinggi 10 cm. Luas permukaannya …|132 cm²|72 cm²|120 cm²|264 cm²|0",
+"Limas alas persegi bersisi 6 cm dan tinggi 4 cm memiliki volume …|48 cm³|144 cm³|24 cm³|96 cm³|0",
+"Akuarium 80 × 50 × 40 cm diisi air ¾ bagian. Volume air …|120 liter|160 liter|90 liter|12 liter|0",
+"Median dari data 6, 7, 7, 8, 9, 9, 9, 10 adalah …|8,5|8|9|7,5|0",
+"Rata-rata nilai 8 siswa 72 dan 12 siswa lain 82. Rata-rata seluruhnya …|78|77|80|76|0",
+"Kantong berisi 5 bola merah, 3 biru, 2 kuning. Peluang terambil bukan biru adalah …|7/10|3/10|1/2|2/5|0",
+"Dadu dilempar 120 kali. Frekuensi harapan muncul mata kurang dari 3 adalah …|40|20|60|30|0",
+"Diagram lingkaran 40 siswa: sepak bola 90°. Banyak siswa penggemar sepak bola …|10 siswa|9 siswa|12 siswa|15 siswa|0",
+"Baju Rp150.000 didiskon 20%, lalu dikenai pajak 10%. Harga akhir …|Rp132.000|Rp135.000|Rp120.000|Rp130.000|0",
+"Titik (a, 4) terletak pada garis y = 2x − 2. Nilai a adalah …|3|1|6|−3|0",
+"Garis 3x + 2y = 12 memotong sumbu Y di titik …|(0, 6)|(4, 0)|(0, 4)|(6, 0)|0"]),graded:true,g7:P(["−8 + 15 − (−3) = …|10|4|−4|20|0",
+"Suhu −5 °C turun 8 °C menjadi …|−13 °C|3 °C|−3 °C|13 °C|0",
+"Lampu A menyala tiap 12 detik, lampu B tiap 18 detik. Keduanya menyala bersamaan lagi setelah … detik.|36|6|72|216|0",
+"Hasil 3/4 + 2/5 adalah …|23/20|5/9|11/20|6/20|0",
+"Hasil 2½ : 5/6 adalah …|3|25/12|5/3|1/3|0",
+"Bentuk sederhana 3x + 4x − 2x adalah …|5x|9x|7x|4x²|0",
+"Bentuk sederhana 2(3x − 4) + 5 adalah …|6x − 3|6x − 4|5x + 1|6x + 13|0",
+"Penyelesaian 4x − 7 = 2x + 9 adalah x = …|8|1|16|−8|0",
+"Umur ayah 3 kali umur Dito, jumlah umur mereka 52 tahun. Umur Dito …|13 tahun|39 tahun|17 tahun|26 tahun|0",
+"Penyelesaian 2x − 5 < 7 adalah …|x < 6|x > 6|x < 1|x > 1|0",
+"Lima buku harganya Rp40.000. Harga 8 buku …|Rp64.000|Rp50.000|Rp56.000|Rp72.000|0",
+"Enam pekerja menyelesaikan proyek dalam 12 hari. Dengan 9 pekerja, selesai dalam … hari.|8|18|9|6|0",
+"Pada peta berskala 1 : 500.000, jarak 3 cm mewakili … km.|15|1,5|150|30|0",
+"Barang dibeli Rp80.000 dan dijual Rp92.000. Persentase untungnya …|15%|12%|10%|20%|0",
+"Harga Rp250.000 didiskon 30%. Harga yang dibayar …|Rp175.000|Rp75.000|Rp220.000|Rp187.500|0",
+"Dua sudut berpelurus, salah satunya 65°. Sudut yang lain …|115°|25°|295°|65°|0",
+"Dua sudut bertolak belakang: (3x + 10)° dan 70°. Nilai x …|20|60|80|10|0",
+"Dua sudut segitiga 50° dan 70°. Sudut ketiga …|60°|120°|50°|70°|0",
+"Keliling persegi panjang 36 cm, panjang 11 cm. Lebarnya …|7 cm|18 cm|25 cm|14 cm|0",
+"Trapesium sisi sejajar 8 cm dan 12 cm, tinggi 5 cm. Luasnya …|50 cm²|100 cm²|40 cm²|60 cm²|0",
+"Jajargenjang alas 14 cm dan tinggi 9 cm. Luasnya …|126 cm²|63 cm²|23 cm²|252 cm²|0",
+"Rata-rata data 5, 6, 6, 8, 10 adalah …|7|6|8|6,5|0",
+"Modus data 4, 5, 5, 6, 7, 5, 8 adalah …|5|4|6|7|0",
+"Dalam kelas 30 siswa, 18 suka sepak bola, 15 suka basket, semua suka minimal satu. Yang suka keduanya …|3 siswa|33 siswa|13 siswa|12 siswa|0",
+"Banyak bilangan prima antara 10 dan 20 adalah …|4|3|5|6|0"]),g9:P(["2³ × 2⁴ = …|128|64|256|14|0",
+"(3²)³ = …|729|81|243|27|0",
+"5⁻² = …|1/25|−25|−10|25|0",
+"Bentuk baku 0,00045 adalah …|4,5 × 10⁻⁴|4,5 × 10⁴|4,5 × 10⁻³|4,5 × 10³|0",
+"Bentuk sederhana √72 adalah …|6√2|8√3|12√6|36√2|0",
+"Hasil √5 × √20 adalah …|10|25|15|100|0",
+"Akar persamaan x² − 5x + 6 = 0 adalah …|x = 2 atau x = 3|x = −2 atau x = −3|x = 1 atau x = 6|x = −1 atau x = 6|0",
+"Penyelesaian x² − 9 = 0 adalah …|x = 3 atau x = −3|x = 9|x = 3|x = −9|0",
+"Persamaan x² − 4x + 4 = 0 memiliki …|Satu akar real kembar|Dua akar real berbeda|Tidak punya akar real|Tak hingga akar|0",
+"Titik puncak y = x² − 4x + 3 adalah …|(2, −1)|(−2, −1)|(2, 1)|(4, 3)|0",
+"Sumbu simetri y = x² − 6x + 5 adalah …|x = 3|x = −3|x = 6|x = 5|0",
+"Jumlah akar 2x² − 6x + 4 = 0 adalah …|3|−3|2|6|0",
+"Dua segitiga sebangun. Sisi 6 cm sebanding 9 cm. Sisi 15 cm sebanding dengan … cm.|10|12|9|22,5|0",
+"Tiang 1,5 m berbayangan 2 m. Pohon berbayangan 12 m. Tinggi pohon …|9 m|16 m|18 m|6 m|0",
+"Titik A(2, 3) ditranslasi (−4, 5) menjadi …|(−2, 8)|(6, −2)|(−2, −2)|(6, 8)|0",
+"Bayangan (3, −2) oleh refleksi terhadap sumbu X adalah …|(3, 2)|(−3, −2)|(−3, 2)|(2, 3)|0",
+"Bayangan (4, 1) oleh rotasi 90° berlawanan arah jarum jam pusat O adalah …|(−1, 4)|(1, −4)|(−4, −1)|(1, 4)|0",
+"Bayangan (2, −1) oleh dilatasi pusat O faktor 3 adalah …|(6, −3)|(5, 2)|(−6, 3)|(6, 3)|0",
+"Volume tabung r = 7 cm, t = 20 cm (π = 22/7) adalah …|3.080 cm³|1.540 cm³|6.160 cm³|440 cm³|0",
+"Luas selimut kerucut r = 7 cm, s = 25 cm (π = 22/7) adalah …|550 cm²|1.100 cm²|275 cm²|154 cm²|0",
+"Volume bola r = 21 cm (π = 22/7) adalah …|38.808 cm³|12.936 cm³|1.386 cm³|58.212 cm³|0",
+"Luas permukaan bola r = 7 cm (π = 22/7) adalah …|616 cm²|154 cm²|1.436 cm²|308 cm²|0",
+"Peluang jumlah mata dua dadu sama dengan 7 adalah …|1/6|1/12|7/36|5/36|0",
+"Peluang hujan 0,3 per hari. Dalam 30 hari diharapkan hujan …|9 hari|10 hari|3 hari|30 hari|0",
+"Jangkauan data 12, 7, 15, 9, 20 adalah …|13|8|20|7|0"])},
+seni:{n:"Seni Budaya",i:"SB",q:P(["Teknik melukis dengan titik-titik kecil disebut …|Pointilisme|Kolase|Mozaik|Aplikasi|0",
+"Perbedaan terang dan gelap yang kuat dalam lukisan disebut …|Chiaroscuro|Sfumato|Siluet|Simetri|0",
+"Warna tersier adalah campuran warna …|Primer dan sekunder|Dua warna primer|Dua sekunder|Hitam dan putih|0",
+"Perspektif dengan satu titik hilang disebut perspektif …|Satu titik|Dua titik|Tiga titik|Atmosfer|0",
+"Pola tangga nada mayor adalah …|1 – 1 – ½ – 1 – 1 – 1 – ½|1 – ½ – 1 – 1 – ½ – 1 – 1|½ – 1 – 1 – 1 – ½ – 1 – 1|1 – 1 – 1 – ½ – 1 – ½ – 1|0",
+"Tanda birama 4/4 memiliki … ketukan per birama.|4|2|3|6|0",
+"Tanda dinamik “forte” (f) berarti …|Keras|Lembut|Sangat lembut|Makin pelan|0",
+"Alat musik angklung ditetapkan UNESCO sebagai warisan budaya pada tahun …|2010|2005|2015|2000|0",
+"Tari Pendet berasal dari daerah …|Bali|Jawa Tengah|Aceh|Sumatra Barat|0",
+"Pertunjukan Reog berasal dari …|Ponorogo|Banyuwangi|Solo|Madura|0",
+"Teknik batik dengan stempel tembaga disebut batik …|Cap|Tulis|Lukis|Cetak sablon|0",
+"Kain tradisional NTT dengan teknik ikat adalah …|Tenun ikat|Songket|Ulos|Batik tulis|0",
+"Seni rupa yang memiliki fungsi pakai disebut seni rupa …|Terapan|Murni|Dua dimensi|Abstrak|0",
+"Karya seni rupa tiga dimensi adalah …|Patung|Lukisan|Poster|Gambar ilustrasi|0",
+"Pementasan yang dimainkan satu orang disebut …|Monolog|Dialog|Opera|Pantomim|0",
+"Motif batik Parang berasal dari daerah …|Yogyakarta/Solo|Papua|Aceh|Bali|0",
+"Kesatuan, keseimbangan, irama termasuk … seni rupa.|Prinsip|Unsur|Bahan|Alat|0",
+"Memotong dan menempel potongan bahan pada bidang gambar disebut …|Kolase|Mozaik|Relief|Montase foto|0",
+"Tempo “Allegro” berarti …|Cepat|Lambat|Sedang|Sangat lambat|0",
+"Teater tanpa dialog yang mengandalkan gerak disebut …|Pantomim|Drama musikal|Ketoprak|Wayang|0",
+"Tangga nada pentatonis terdiri dari … nada.|5|7|8|12|0",
+"Warna komplementer dari merah adalah …|Hijau|Biru|Kuning|Ungu|0",
+"Alat musik sasando berasal dari …|Nusa Tenggara Timur|Papua|Kalimantan|Sumatra Utara|0",
+"Tari Saman berasal dari …|Aceh|Bali|Jawa Barat|Sulawesi|0",
+"Garis horizontal memberi kesan …|Tenang dan stabil|Dinamis dan lincah|Gelisah|Kuat menjulang|0"])},
+arab:{n:"Bahasa Arab",i:"AR",q:P(["Angka 3 dalam bahasa Arab adalah …|ثلاثة|اثنان|أربعة|خمسة|0",
+"Angka 10 dalam bahasa Arab adalah …|عشرة|تسعة|ثمانية|سبعة|0",
+"Jawaban salam “السلام عليكم” adalah …|وعليكم السلام|صباح الخير|شكرا|مع السلامة|0",
+"Arti “مدرسة” adalah …|Sekolah|Guru|Siswa|Kelas|0",
+"Arti “مدرس” adalah …|Guru|Murid|Dokter|Petani|0",
+"Arti “سبورة” adalah …|Papan tulis|Pena|Buku|Meja|0",
+"Arti “نافذة” adalah …|Jendela|Pintu|Lantai|Atap|0",
+"Arti “جدّ” adalah …|Kakek|Ayah|Paman|Adik|0",
+"Hari Rabu dalam bahasa Arab adalah …|الأربعاء|الثلاثاء|الخميس|الاثنين|0",
+"Hari Jumat dalam bahasa Arab adalah …|الجمعة|السبت|الأحد|الخميس|0",
+"Arti “أحمر” adalah …|Merah|Hijau|Biru|Kuning|0",
+"Arti “أزرق” adalah …|Biru|Merah|Kuning|Putih|0",
+"Arti “من أنت؟” adalah …|Siapa kamu?|Apa ini?|Di mana?|Kapan?|0",
+"Arti “كيف حالك؟” adalah …|Bagaimana kabarmu?|Siapa namamu?|Dari mana asalmu?|Berapa umurmu?|0",
+"Arti “أين” adalah …|Di mana|Kapan|Siapa|Mengapa|0",
+"Arti “متى” adalah …|Kapan|Di mana|Bagaimana|Berapa|0",
+"Arti “أخت” adalah …|Saudara perempuan|Ibu|Bibi|Nenek|0",
+"Arti “خال” adalah …|Paman dari pihak ibu|Paman dari pihak ayah|Kakek|Sepupu|0",
+"Arti “مسجد” adalah …|Masjid|Pasar|Rumah|Sekolah|0",
+"Arti “جميل” adalah …|Indah|Besar|Jauh|Baru|0",
+"Arti “قلم” adalah …|Pena|Buku|Tas|Penghapus|0",
+"Arti “خمسة” adalah …|Lima|Empat|Enam|Tujuh|0",
+"Hari Senin dalam bahasa Arab adalah …|الاثنين|الأحد|السبت|الثلاثاء|0",
+"Arti “ماء” adalah …|Air|Susu|Roti|Teh|0",
+"Arti “أصفر” adalah …|Kuning|Hijau|Hitam|Putih|0"])}
+};
+const GR=()=>{const g=parseInt(user&&user.k);return g>=7&&g<=9?g:8};
+function BK(k){const o=SUBJ[k];if(!o.graded)return o.q;const g=GR();return g===8?o.q:(o["g"+g]||null)}
+const ORD=["indo","ipa","ips","jawa","inggris","pjok","info","mtk","seni","arab"];
+const DUR=30*60,MAX=5,OWN="anggadwisaputra",L="ABCD";
+const $=id=>document.getElementById(id);
+const SECS=["s-login","s-intro","s-sub","s-exam","s-res","s-own"];
+var fw=0,FWN="Jendela mengambang",FWMAX=4,lastFw=0,fwSz=false,actx=null,alT=null;
+const IC={"user": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7\"/></svg>", "cap": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M2 9l10-5 10 5-10 5z\"/><path d=\"M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5\"/><path d=\"M22 9v6\"/></svg>", "bat": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"2\" y=\"7\" width=\"17\" height=\"10\" rx=\"2.5\"/><path d=\"M22 11v2\"/><path d=\"M6 10v4M10 10v4\"/></svg>", "clock": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/></svg>", "pen": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 20l1-4L16 5l3 3L8 19z\"/><path d=\"M14 7l3 3\"/></svg>", "check": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12.5l4.5 4.5L19 7.5\"/></svg>", "right": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\"/></svg>", "left": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M15 5l-7 7 7 7\"/></svg>", "dots": "<svg class=\"ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"5\" r=\"1.6\"/><circle cx=\"12\" cy=\"12\" r=\"1.6\"/><circle cx=\"12\" cy=\"19\" r=\"1.6\"/></svg>"};
+let ans,flg,cur,left,tick,user,db,usr,uid,ch,ev,on=false,lv=0,t0,sub=false;
+function show(id){SECS.forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)}
+const err=m=>{$("err").textContent=m};
+async function hash(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s.trim().toUpperCase()));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+const ready=(async()=>{try{if(window.claude){usr=await claude.use("user");db=await claude.use("db");if(usr)uid=await usr.id()}}catch(e){}})();
+var ownOk=false;ready.then(async()=>{try{ownOk=!!usr&&await usr.isOwner()}catch(e){}try{tokView()}catch(e){}});
+function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("hide");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.add("hide"),5000)}
+$("go").onclick=async()=>{
+  await ready;
+  const bl=await banLeft();if(bl)return err("Akun ini diblokir sampai jam "+dt(bl).jam+" ("+dt(bl).tgl+" "+dt(bl).bln+" "+dt(bl).thn+").");
+  let n=$("nama").value.trim(),k=$("kelas").value.trim(),t=$("token").value.trim();
+  if(ownOk&&n.replace(/\s/g,"").toLowerCase()===OWN){err("");user={n,k:"Admin"};isOwn=true;return openOwner()}
+  if(!n||!k||!t)return err("Isi nama, kelas, dan token dulu.");
+  if(!/^[7-9]\s?[A-Za-z]$/.test(k))return err("Kelas tidak diizinkan. Ujian ini khusus untuk SMP kelas 7, 8, atau 9. Contoh: 7A, 8B, 9C.");
+  k=k.replace(/\s/g,"").toUpperCase();
+  if(!db)return err("Data ujian belum tersambung. Muat ulang halaman dan masuk ke akun Claude.");
+  let c;try{c=await db.doc("config/exam").get()}catch(e){return err("Gagal membaca token. Coba lagi.")}
+  if(!c.exists)return err("Ujian belum dibuka. Minta owner membuat token.");
+  if(await hash(t)!==c.data().h)return err("Token tidak cocok. Cek lagi dengan pengawas.");
+  if(db&&uid){try{const key=await hash(n.replace(/\s/g,"")),ref=db.doc("sessions/"+key),sd=await ref.get();
+    if(sd.exists&&sd.data().on&&sd.data().uid!==uid){await banNow(n);return err("Nama ini sedang dipakai pemilik aslinya. Akunmu diblokir 10 menit.")}
+    await ref.set({on:true,uid,t:Date.now()});sessCur=key}catch(e){}}
+  err("");isOwn=false;user={n,k};$("hi").textContent="Halo, "+n+" ("+k+")";show("s-intro")
+};
+function save(st,sc){if(user){try{localStorage.setItem("cbtex",JSON.stringify({key:nk(user.n),st,ch,ev,tr}))}catch(e){}}if(!db||!uid||!user)return;db.doc("logs/"+uid).set({n:user.n,k:user.k,ch,ev,tr,mp:subj,st,sc:sc??null,t0}).catch(()=>{})}
+function begin(){ans=Q.map(()=>-1);flg=Q.map(()=>false);cur=0;left=DUR;dl=Date.now()+DUR*1000;ch=carry?carry.ch:MAX;ev=carry?carry.ev:[];fw=ev.filter(x=>x.y===FWN).length;tr=carry?carry.tr:0;carry=null;t0=Date.now();on=true;$("who").textContent=user.n+" · "+user.k+" · "+SUBJ[subj].n;show("s-exam");render();save("mengerjakan");clearInterval(tick);tick=setInterval(()=>{left=Math.max(0,Math.ceil((dl-Date.now())/1000));clock();if(left<=0)end(false)},1000);clock();trOn=false;chkTr()}
+function clock(){const m=String(Math.floor(left/60)).padStart(2,"0"),s=String(left%60).padStart(2,"0");$("tm").textContent=m+":"+s;$("tm").classList.toggle("low",left<=60)}
+function viol(y){
+  if(!on)return;const now=Date.now();if(now-lv<1500)return;lv=now;ch--;ev.push({t:now,y});
+  toast("Terdeteksi: "+y+". "+(ch>0?"Sisa kesempatan "+ch+" dari "+MAX+".":"Kesempatan habis."));
+  if(ch<=0)end(true);else{save("mengerjakan");render()}
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)viol("Keluar dari halaman ujian")});
+window.addEventListener("blur",()=>setTimeout(()=>{if(!document.hidden)floatViol("blur")},150));
+document.addEventListener("copy",e=>{if(on){e.preventDefault();viol("Menyalin teks soal (terduga mencari jawaban di AI)")}});
+document.addEventListener("contextmenu",e=>{if(on){e.preventDefault();viol("Klik kanan pada soal")}});
+function render(){
+  const q=Q[cur],done=ans.filter(x=>x>=0).length;
+  $("qn").textContent="Soal "+(cur+1)+" dari "+Q.length;$("qt").textContent=q.q;
+  $("pg").textContent=done+" dari "+Q.length+" terjawab · Kesempatan "+ch+"/"+MAX;$("pb").style.width=(done/Q.length*100)+"%";
+  $("opts").innerHTML=q.o.map((t,i)=>'<label class="opt'+(ans[cur]===i?" on":"")+'"><input type="radio" name="o" value="'+i+'"'+(ans[cur]===i?" checked":"")+'><span class="k">'+L[i]+'</span><span dir="auto">'+t+'</span></label>').join("");
+  document.querySelectorAll("#opts input").forEach(r=>r.onchange=()=>{ans[cur]=+r.value;render()});
+  $("finish").disabled=done<Q.length;$("prev").disabled=cur===0;$("next").disabled=cur===Q.length-1;
+  $("flag").textContent=flg[cur]?"Hapus tanda ragu":"Tandai ragu";
+  $("grid").innerHTML=Q.map((_,i)=>'<button class="q'+(ans[i]>=0?" done":"")+(i===cur?" cur":"")+(flg[i]?" fl":"")+'" data-i="'+i+'" aria-label="Soal '+(i+1)+'">'+(i+1)+'</button>').join("");
+  document.querySelectorAll("#grid .q").forEach(b=>b.onclick=()=>{cur=+b.dataset.i;render()})
+}
+$("prev").onclick=()=>{cur--;render()};$("next").onclick=()=>{cur++;render()};
+$("flag").onclick=()=>{flg[cur]=!flg[cur];render()};
+$("finish").onclick=()=>{const k=ans.filter(x=>x<0).length,f=flg.filter(Boolean).length;
+  $("dmsg").textContent=(k?k+" soal belum dijawab. ":"Semua soal sudah dijawab. ")+(f?f+" soal masih ditandai ragu. ":"")+"Jawaban tidak bisa diubah setelah ujian diakhiri.";$("dlg").showModal()};
+$("no").onclick=()=>$("dlg").close();
+$("yes").onclick=()=>{$("dlg").close();end(false)};
+function end(zero){
+  alarmStop();clearInterval(tick);on=false;if($("dlg").open)$("dlg").close();
+  let b=0,w=0,k=0;ans.forEach((a,i)=>{a<0?k++:a===Q[i].a?b++:w++});
+  const sc=zero?0:Math.round(b/Q.length*100);
+  $("rs").textContent=sc;$("rb").textContent=b;$("rw").textContent=w;$("rk").textContent=k;
+  $("rwho").textContent=user.n+" · "+user.k+" · "+SUBJ[subj].n+(zero?" · Nilai 0: kesempatan pelanggaran habis":" · Ujian selesai");
+  $("rev").innerHTML=zero?"":"<h2>Pembahasan</h2>"+Q.map((q,i)=>'<div class="card"><div class="mute">Soal '+(i+1)+(ans[i]<0?" · tidak dijawab":"")+'</div><div class="qtext" dir="auto">'+q.q+'</div>'+q.o.map((t,j)=>'<div class="opt'+(j===q.a?" right":j===ans[i]?" wrong":"")+'"><span class="k">'+L[j]+'</span><span>'+t+'</span></div>').join("")+'</div>').join("");
+  save(zero?"nol":"selesai",sc);logDone(sc,zero);show("s-res")
+}
+$("again").onclick=()=>{$("token").value="";show("s-login")};
+function openOwner(){
+  show("s-own");
+  if(!db){$("olist").textContent="Data belum tersambung.";return}
+  if(sub)return;sub=true;histSub();
+  db.collection("logs").onSnapshot(s=>{
+    const rows=s.docs.map(d=>d.data()).sort((a,b)=>(b.t0||0)-(a.t0||0));
+    const box=$("olist");box.textContent="";
+    if(!rows.length){box.textContent="Belum ada peserta yang mengerjakan.";return}
+    rows.forEach(r=>{
+      const c=document.createElement("div");c.className="card";c.style.marginBottom="10px";
+      const e=r.ev||[];
+      const h=document.createElement("b");h.textContent=r.n+" · "+r.k;c.append(h);
+      const p=document.createElement("p");p.className="mute";
+      p.textContent="Status: "+(r.st==="nol"?"nilai 0 (kesempatan habis)":r.st)+" · Nilai: "+(r.sc??"-")+" · Terdeteksi "+e.length+" dari "+MAX+"x";c.append(p);
+      e.forEach(x=>{const d=document.createElement("div");d.textContent=new Date(x.t).toLocaleTimeString("id-ID")+" — "+x.y;d.style.color="var(--bad)";c.append(d)});
+      box.append(c)});
+  },()=>{$("olist").textContent="Gagal memuat riwayat."})
+}
+$("settoken").onclick=async()=>{
+  const t=$("newtok").value.trim();if(t.length<4){$("omsg").textContent="Token minimal 4 karakter.";return}
+  try{await db.doc("config/exam").set({h:await hash(t),at:Date.now()});$("newtok").value="";$("omsg").textContent="Token disimpan. Bagikan ke peserta lewat admin."}
+  catch(e){$("omsg").textContent="Gagal menyimpan token."}
+};
+$("olog").onclick=()=>{$("menu").classList.add("hide");show("s-login")};
+$("dots").onclick=()=>{const m=$("menu");m.classList.toggle("hide");$("dots").setAttribute("aria-expanded",String(!m.classList.contains("hide")))};
+function pane(){$("err").textContent=""}
+
+const ADM="e7d1f058d0666236f91b77f32e34ebcdfef78aed69b2135ab3ca6e30df30c09f";let admFail=0,admLock=0,sessCur=null;
+function release(){if(db&&sessCur){const k=sessCur;sessCur=null;db.doc("sessions/"+k).set({on:false,uid:uid||null,t:Date.now()}).catch(()=>{})}}
+function tokView(){const o=ownOk&&$("nama").value.replace(/\s/g,"").toLowerCase()===OWN;$("tw").classList.toggle("hide",o);if(o)$("token").value="";else{$("aw").classList.add("hide");$("adm").value=""}}
+$("nama").addEventListener("input",tokView);
+$("again").addEventListener("click",release);
+$("outi").onclick=()=>{release();$("token").value="";show("s-login")};
+$("unlock").onclick=async()=>{const n=$("ulk").value.replace(/\s/g,"");if(!n)return;try{await db.doc("sessions/"+await hash(n)).set({on:false,uid:null,t:Date.now()});$("ulk").value="";$("omsg").textContent="Kunci login dibuka."}catch(e){$("omsg").textContent="Gagal membuka kunci."}};
+const _p=pane;pane=function(x){_p(x);tokView()};
+
+/* ===== aturan aktif ===== */
+var dl=0,fs=false;
+function goFS(){try{const e=document.documentElement;if(!document.fullscreenElement&&e.requestFullscreen)e.requestFullscreen().then(()=>{fs=true}).catch(()=>{})}catch(x){}}
+document.addEventListener("fullscreenchange",()=>{if(on&&fs&&!document.fullscreenElement)viol("Keluar dari layar penuh")});
+document.addEventListener("click",()=>{if(on&&fs&&!document.fullscreenElement)goFS()});
+function syncTime(){if(!on)return;left=Math.max(0,Math.ceil((dl-Date.now())/1000));clock();if(left<=0)end(false)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncTime()});
+document.addEventListener("keydown",e=>{if(!on)return;const k=(e.key||"").toLowerCase(),m=e.ctrlKey||e.metaKey;
+  if(e.key==="F12"||(m&&e.shiftKey&&["i","j","c"].includes(k))||(m&&k==="u")){e.preventDefault();viol("Membuka alat pengembang atau kode sumber")}});
+window.addEventListener("beforeprint",()=>viol("Mencetak halaman soal"));
+["selectstart","dragstart"].forEach(t=>document.addEventListener(t,e=>{if(on)e.preventDefault()}));
+const _viol=viol;viol=function(y){const b=ch;_viol(y);if(on&&ch<b){$("wmsg").textContent=y+". Sisa kesempatan "+ch+" dari "+MAX+". Jika habis, nilai menjadi 0.";$("wdlg").querySelector("h2").textContent="Pelanggaran terdeteksi";if(!$("wdlg").open)try{$("wdlg").showModal()}catch(e){}alarmStart(document.hidden||!document.hasFocus())}};
+$("wok").onclick=()=>{$("wdlg").close();alarmStop();goFS()};
+const _end=end;end=function(z){_end(z);try{if($("wdlg").open)$("wdlg").close();if(document.fullscreenElement){fs=false;document.exitFullscreen()}}catch(e){}};
+const _render=render;render=function(){_render();$("pips").innerHTML=Array.from({length:MAX},(_,i)=>'<i class="'+(i>=ch?"x":"")+'"></i>').join("")};
+var ilT=null;
+function introLock(){clearInterval(ilT);let n=5;const a=$("agree"),b=$("start");a.disabled=true;
+  const f=()=>{b.textContent=n>0?"Baca semua aturan dulu ("+n+")":"Mulai ujian";if(n<=0){clearInterval(ilT);a.disabled=false}n--};f();ilT=setInterval(f,1000)}
+$("agree").onchange=()=>{$("start").disabled=!$("agree").checked};
+const _s2=show;show=function(id){if(id==="s-login")pane();if(id==="s-intro"){$("agree").checked=false;$("start").disabled=true;introLock()}_s2(id);if(id==="s-sub"){if(user){$("dashhi").textContent="Dashboard";dashFill();try{cvCards.forEach(c=>c.classList.toggle("off",!BK(c.dataset.k)))}catch(e){}}cvLayout(cvPos,false);cvPick(Math.round(cvPos))}};
+
+var isOwn=false;
+$("oexam").onclick=()=>{$("menu").classList.add("hide");$("hi").textContent="Halo, "+user.n+" (Owner)";show("s-intro")};
+$("olog").addEventListener("click",()=>{isOwn=false});
+["again","outi"].forEach(i=>$(i).addEventListener("click",()=>{if(isOwn)openOwner()}));
+
+const BAN_MS=10*60*1000;
+function dt(t){const d=new Date(t);return{jam:d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}),tgl:d.getDate(),bln:d.toLocaleString("id-ID",{month:"long"}),thn:d.getFullYear()}}
+async function banLeft(){let u=0;try{u=+localStorage.getItem("cbtban")||0}catch(e){}
+  if(db&&uid){try{const d=await db.doc("bans/"+uid).get();if(d.exists)u=Math.max(u,d.data().until||0)}catch(e){}}
+  return u>Date.now()?u:0}
+async function banNow(name){const t=Date.now(),u=t+BAN_MS;try{localStorage.setItem("cbtban",String(u))}catch(e){}
+  if(db){try{if(uid)await db.doc("bans/"+uid).set({until:u,t});await db.doc("banlog/"+(uid||"x")+"_"+t).set({n:name,t,until:u,by:uid||null})}catch(e){}}}
+function logDone(sc,zero){if(db&&user){const t=Date.now();db.doc("done/"+(uid||"x")+"_"+t).set({n:user.n,k:user.k,t,sc,zero:!!zero,mp:(SUBJ[subj]||{}).n||""}).catch(()=>{})}}
+function hist(col,box,row){db.collection(col).onSnapshot(s=>{const rows=s.docs.map(d=>d.data()).sort((a,b)=>(b.t||0)-(a.t||0));box.textContent="";
+  if(!rows.length){box.textContent="Belum ada.";return}
+  rows.forEach(r=>{const c=document.createElement("div");c.className="card";c.style.marginBottom="10px";row(c,r);box.append(c)})},()=>{box.textContent="Gagal memuat riwayat."})}
+function ln(c,t,m){const d=document.createElement("div");d.textContent=t;if(m)d.className="mute";c.append(d)}
+function histSub(){
+  hist("banlog",$("oban"),(c,r)=>{const b=document.createElement("b");b.textContent=r.n;c.append(b);const a=dt(r.t),u=dt(r.until);
+    ln(c,"Banned sampai: jam "+u.jam+" ("+u.tgl+" "+u.bln+" "+u.thn+")"+(r.until>Date.now()?" · masih aktif":""));
+    ln(c,"Tanggal banned: "+a.tgl+" · Bulan: "+a.bln+" · Tahun: "+a.thn,1)});
+  hist("done",$("odone"),(c,r)=>{const a=dt(r.t),nl=r.zero?"0 (kesempatan habis)":String(r.sc);
+    [["Username",r.n],["Kelas",r.k],["Nilai",nl]].forEach(x=>{const d=document.createElement("div");const l=document.createElement("span");l.textContent=x[0]+" : ";l.style.opacity=".7";const v=document.createElement("b");v.textContent=x[1];d.append(l,v);c.append(d)});
+    ln(c,"Pelajaran: "+(r.mp||"-")+" · Jam "+a.jam,1);
+    ln(c,a.tgl+" "+a.bln+" "+a.thn,1)})}
+
+let subj=null,carry=null,tr=0,trOn=false;
+const nk=n=>n.replace(/\s/g,"").toLowerCase();
+async function getCarry(){let c=null;
+  try{const j=JSON.parse(localStorage.getItem("cbtex")||"null");if(j&&j.key===nk(user.n)&&j.st==="mengerjakan")c={ch:j.ch,ev:j.ev||[],tr:j.tr||0}}catch(e){}
+  if(db&&uid){try{const d=await db.doc("logs/"+uid).get();if(d.exists){const r=d.data();if(r.st==="mengerjakan"&&typeof r.ch==="number"&&(!c||r.ch<c.ch))c={ch:r.ch,ev:r.ev||[],tr:r.tr||0}}}catch(e){}}
+  return c}
+var cvPos=0,cvCards=[],cvN=ORD.length,cvDrag=null,cvMoved=false;
+function cvStep(){const W=$("stage").clientWidth||320;return Math.min(250,W*.64)*.62}
+function cvLayout(p,snap){const st=$("stage"),W=st.clientWidth||320,cw=Math.min(250,W*.64),step=cw*.62;st.style.setProperty("--cw",cw+"px");
+  cvCards.forEach((c,i)=>{const d=i-p,a=Math.abs(d),sg=d<0?-1:1;
+    const x=sg*(Math.min(a,1)*step*1.05+Math.max(a-1,0)*step*.5),z=-Math.min(a,3)*150,rot=-sg*Math.min(a,1.15)*46,sc=1-Math.min(a,3)*.07,bl=Math.min(a*3.2,7.5);
+    c.style.transform="translate3d("+x+"px,0,"+z+"px) rotateY("+rot+"deg) scale("+sc+")";
+    c.style.filter=a<.12?"none":"blur("+bl.toFixed(1)+"px) saturate("+(1-Math.min(a,2)*.2)+")";
+    c.style.opacity=Math.max(.3,1-Math.max(a-.3,0)*.2);c.style.zIndex=50-Math.round(a*10);
+    c.style.visibility=a>3.4?"hidden":"visible";c.classList.toggle("snap",!!snap)});
+  const r=Math.round(Math.max(0,Math.min(cvN-1,p)));document.querySelectorAll("#cvdots i").forEach((d,i)=>d.classList.toggle("on",i===r))}
+function cvPick(i){subj=ORD[i];$("gosub").disabled=!BK(subj);cvCards.forEach((c,j)=>{c.classList.toggle("on",j===i);c.setAttribute("aria-selected",j===i)})}
+function cvSettle(i){i=Math.max(0,Math.min(cvN-1,i));cvPos=i;cvLayout(i,true);cvPick(i)}
+function buildSubs(){
+  const SV={
+indo:'<path d="M10 14h18c3 0 4 2 4 4v32c0-2-1-4-4-4H10z"/><path d="M54 14H36c-3 0-4 2-4 4v32c0-2 1-4 4-4h18z"/>',
+ipa:'<ellipse cx="32" cy="32" rx="24" ry="9"/><ellipse cx="32" cy="32" rx="24" ry="9" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="24" ry="9" transform="rotate(120 32 32)"/><circle cx="32" cy="32" r="3.5" fill="#fff"/>',
+ips:'<circle cx="32" cy="32" r="22"/><ellipse cx="32" cy="32" rx="9" ry="22"/><path d="M10 32h44M14 21h36M14 43h36"/>',
+jawa:'<path d="M32 6c5 10 17 16 17 32a17 17 0 0 1-34 0C15 22 27 16 32 6z"/><path d="M32 22v30M32 30l-8 6M32 30l8 6M32 40l-6 5M32 40l6 5"/>',
+inggris:'<path d="M10 14h44v28H30l-10 9v-9H10z"/><path d="M19 24h26M19 32h16"/>',
+pjok:'<circle cx="32" cy="32" r="22"/><path d="M10 32h44M32 10v44"/><path d="M15 15c8 8 8 26 0 34M49 15c-8 8-8 26 0 34"/>',
+info:'<rect x="10" y="12" width="44" height="30" rx="3"/><path d="M4 50h56"/><path d="M27 21l-6 6 6 6M37 21l6 6-6 6"/>',
+mtk:'<path d="M18 11v18M9 20h18M37 20h18M10 38l16 16M26 38L10 54M37 46h18"/><circle cx="46" cy="38" r="2" fill="#fff"/><circle cx="46" cy="54" r="2" fill="#fff"/>',
+seni:'<path d="M26 44V14l24-6v30"/><circle cx="20" cy="46" r="7"/><circle cx="44" cy="40" r="7"/>',
+arab:'<path d="M38 8a24 24 0 1 0 0 48 19 19 0 1 1 0-48z"/><path d="M48 24l2.4 5 5.6.8-4 4 1 5.5-5-2.7-5 2.7 1-5.5-4-4 5.6-.8z"/>'};
+  window.CVD={indo:"Ejaan, sinonim, antonim, dan kalimat",ipa:"Makhluk hidup, gaya, tata surya, dan zat",ips:"Sejarah, geografi, ekonomi, dan sosial",jawa:"Basa ngoko, krama, aksara, dan budaya Jawa",inggris:"Kosakata dan tata bahasa",pjok:"Atletik, permainan bola, senam, dan kesehatan",info:"Komputer, algoritma, jaringan, dan etika digital",mtk:"Hitung dasar, pecahan, geometri, dan data",seni:"Seni rupa, musik, tari, dan budaya daerah",arab:"Mufradat, angka, salam, dan huruf hijaiah"};
+  $("subs").innerHTML='<div class="stage" id="stage" tabindex="0" role="listbox" aria-label="Pilih mata pelajaran"><div class="track">'+ORD.map((k,i)=>'<button class="pick" type="button" role="option" data-k="'+k+'" data-i="'+i+'"><span class="rings" aria-hidden="true"></span><span class="gl" aria-hidden="true">'+SUBJ[k].i+'</span><span class="no">'+String(i+1).padStart(2,"0")+'<small>/10</small></span><span class="ic">'+SUBJ[k].i+'</span><span class="badge"><u>25 soal</u><em>'+IC.check+' Dipilih</em></span><span class="art" aria-hidden="true"><svg viewBox="0 0 64 64">'+SV[k]+'</svg></span><span class="tx"><b>'+SUBJ[k].n+'</b><span class="meta"><i>'+IC.clock+' 30 menit</i><i>'+IC.pen+' 25 soal</i></span><span class="go"><em class="g1">Pilih mapel '+IC.right+'</em><em class="g2">'+IC.check+' Dipilih</em></span></span></button>').join("")+'</div></div><div class="cvbar"><button class="rb" id="cvp" type="button" aria-label="Mapel sebelumnya">'+IC.left+'</button><div class="cvlab"></div><button class="rb" id="cvn" type="button" aria-label="Mapel berikutnya">'+IC.right+'</button></div><div class="cvdots" id="cvdots">'+ORD.map((_,i)=>'<i data-i="'+i+'"></i>').join("")+'</div>';
+  cvCards=[...$("subs").querySelectorAll(".pick")];const st=$("stage");
+  st.addEventListener("pointerdown",e=>{cvDrag={x:e.clientX,p:cvPos,id:e.pointerId};cvMoved=false});
+  st.addEventListener("pointermove",e=>{if(!cvDrag)return;const dx=e.clientX-cvDrag.x;if(Math.abs(dx)>7&&!cvMoved){cvMoved=true;try{st.setPointerCapture(cvDrag.id)}catch(_){}}
+    if(cvMoved){cvPos=Math.max(-.35,Math.min(cvN-.65,cvDrag.p-dx/cvStep()));cvLayout(cvPos,false)}});
+  const up=()=>{if(!cvDrag)return;const m=cvMoved;cvDrag=null;if(m)cvSettle(Math.round(cvPos))};
+  st.addEventListener("pointerup",up);st.addEventListener("pointercancel",up);
+  st.addEventListener("click",e=>{if(cvMoved)return;const c=e.target.closest(".pick");if(c)cvSettle(+c.dataset.i)});
+  st.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"){e.preventDefault();cvSettle(Math.round(cvPos)-1)}else if(e.key==="ArrowRight"){e.preventDefault();cvSettle(Math.round(cvPos)+1)}});
+  $("cvp").onclick=()=>cvSettle(Math.round(cvPos)-1);$("cvn").onclick=()=>cvSettle(Math.round(cvPos)+1);
+  $("cvdots").onclick=e=>{const d=e.target.closest("i");if(d)cvSettle(+d.dataset.i)};
+  window.addEventListener("resize",()=>cvLayout(cvPos,false));cvLayout(0,false)}
+buildSubs();
+$("start").onclick=()=>{subj=null;$("gosub").disabled=true;document.querySelectorAll("#subs .pick").forEach(x=>x.classList.remove("on"));show("s-sub")};
+$("bksub").onclick=()=>show("s-intro");
+$("other").onclick=()=>{subj=null;$("gosub").disabled=true;document.querySelectorAll("#subs .pick").forEach(x=>x.classList.remove("on"));show("s-sub")};
+$("gosub").onclick=async()=>{if(!subj)return;goFS();try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume()}catch(e){}$("gosub").disabled=true;carry=await getCarry();Q=BK(subj).map(q=>{const ix=[0,1,2,3].sort(()=>Math.random()-.5);return{q:q.q,o:ix.map(i=>q.o[i]),a:ix.indexOf(q.a)}});begin()};
+window.addEventListener("pagehide",()=>viol("Menutup tab atau keluar dari halaman ujian"));
+document.addEventListener("cut",e=>{if(on){e.preventDefault();viol("Memotong teks soal (terduga memakai AI)")}});
+document.addEventListener("keydown",e=>{if(!on)return;const k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","a","p","s"].includes(k))||e.key==="PrintScreen"){e.preventDefault();viol("Mencoba menyalin atau menangkap soal (terduga memakai AI)")}});
+function isTr(){const h=document.documentElement;return /translated-(ltr|rtl)/.test(h.className)||(!!h.lang&&h.lang!=="id")||!!document.querySelector('#s-exam font[style*="vertical-align"]')}
+function violT(){if(!on)return;tr++;ev.push({t:Date.now(),y:"Memakai terjemahan"});toast("Terdeteksi: memakai terjemahan. Sisa kesempatan terjemahan "+Math.max(0,3-tr)+" dari 3.");if(tr>=3)end(true);else{save("mengerjakan");$("wmsg").textContent="Terdeteksi memakai terjemahan ("+tr+"x dari 3x). Setelah 3x nilai menjadi 0.";$("wdlg").querySelector("h2").textContent="Terjemahan terdeteksi";if(!$("wdlg").open)try{$("wdlg").showModal()}catch(e){}alarmStart(false)}}
+function chkTr(){const t=isTr();if(t&&!trOn){trOn=true;violT()}else if(!t)trOn=false}
+new MutationObserver(chkTr).observe(document.documentElement,{attributes:true,attributeFilter:["class","lang"],childList:true,subtree:true});
+
+
+/* ===== jendela mengambang + alarm ===== */
+var master=null,alAway=false;
+function beep(){if(!actx||!master)return;try{for(let i=0;i<10;i++){const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*.16;o.type="square";o.frequency.value=1500;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.4,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.1);o.connect(g);g.connect(master);o.start(t);o.stop(t+.11)}}catch(e){}
+  try{navigator.vibrate&&navigator.vibrate([90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90])}catch(e){}}
+function alarmStart(away){alarmStop();if(!actx)return;try{actx.resume();master=actx.createGain();master.gain.value=1;master.connect(actx.destination)}catch(e){return}alAway=!!away;beep();alT=setInterval(beep,1700)}
+function alarmStop(){if(alT){clearInterval(alT);alT=null}if(master){try{master.gain.value=0;master.disconnect()}catch(e){}master=null}try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+function backChk(){if(alT&&alAway&&!document.hidden&&document.hasFocus())alarmStop()}
+window.addEventListener("focus",backChk);document.addEventListener("visibilitychange",backChk);
+function floatViol(src){
+  if(!on)return;const now=Date.now();if(now-lastFw<3000)return;lastFw=now;fw++;ev.push({t:now,y:FWN});
+  $("wmsg").textContent="Kamu terdeteksi telah membuka aplikasi dalam jendela mengambang ("+fw+"x dari "+FWMAX+"x). Menyontek memakai jendela mengambang dilarang. Setelah "+FWMAX+"x nilai menjadi 0.";
+  $("wdlg").querySelector("h2").textContent="Jendela mengambang terdeteksi!";
+  toast("Terdeteksi jendela mengambang: "+fw+"x dari "+FWMAX+"x");
+  if(fw>=FWMAX){end(true);return}
+  alarmStart(true);save("mengerjakan");if(!$("wdlg").open)try{$("wdlg").showModal()}catch(e){}}
+window.addEventListener("resize",()=>{if(!on||!matchMedia("(pointer:coarse)").matches)return;
+  const r=(innerWidth*innerHeight)/(screen.width*screen.height),sm=r<.55;if(sm&&!fwSz){fwSz=true;floatViol("size")}else if(!sm){fwSz=false;backChk()}});
+const _wo=$("wok").onclick;
+/* ===== dashboard: username, kelas, baterai ===== */
+var batt=null;
+function batTxt(){if(!batt)return"Tidak tersedia";return Math.round(batt.level*100)+"%"+(batt.charging?" · mengisi":"")}
+function dashFill(){const m=$("dashmeta");m.textContent="";
+  [["Username",user.n,IC.user],["Kelas",user.k==="Admin"?"Owner":user.k,IC.cap],["Baterai",batTxt(),IC.bat]].forEach(a=>{const e=document.createElement("div");e.innerHTML='<i></i><span></span><b></b>';e.children[0].innerHTML=a[2];e.children[1].textContent=a[0];e.children[2].textContent=a[1];if(a[0]==="Baterai")e.children[2].id="batv";m.append(e)})}
+try{navigator.getBattery&&navigator.getBattery().then(b=>{batt=b;const u=()=>{const v=$("batv");if(v)v.textContent=batTxt()};["levelchange","chargingchange"].forEach(t=>b.addEventListener(t,u));u()})}catch(e){}
+</script>
+</body>
+</html>
