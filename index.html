@@ -280,21 +280,86 @@ h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;b
 .pick .meta i{display:inline-flex;align-items:center;gap:5px}.pick .meta .ico{width:.95em;height:.95em}
 .rb .ico{width:22px;height:22px}.pick .badge em{display:none;align-items:center;gap:4px}.pick.on .badge em{display:inline-flex}
 .pick.off{filter:grayscale(.9) brightness(.7)}.pick.off .go em{display:none}.pick.off .go::after{content:"Soal kelas ini belum tersedia";font-size:.76rem}
+.omi{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:72px;padding:16px 20px;margin-bottom:12px;text-align:left;cursor:pointer;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;font:inherit}
+.omi span{display:flex;flex-direction:column;gap:2px;min-width:0}.omi b{font-size:1.05rem}.omi small{color:var(--mute);font-size:.85rem}.omi i{font-style:normal;font-size:1.8rem;line-height:1;opacity:.6;flex:none}
+.omi:hover,.omi:focus-visible{border-color:var(--pri)}
+.opane{margin-bottom:16px}.opane h2{margin:14px 0 10px}.oback{margin-bottom:4px}
+
+/* ===== tema ujian: ungu + putih ===== */
+:root{--bg:#f7f5ff;--card:#fff;--ink:#1f1a3d;--mute:#6b6590;--line:#e3ddf7;--pri:#6d28d9;--pri-d:#5b21b6;--pri-ink:#fff;--ok:#16a34a;--bad:#dc2626;--flag:#f59e0b;--sel:#efe9ff;--glass:#fff;color-scheme:light}
+body{background:var(--bg);background-image:none;color:var(--ink)}
+body::before,body::after{display:none}
+.hdr{background:linear-gradient(135deg,#4c1d95,#6d28d9);border:0;border-image:none;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 6px 20px -10px rgba(76,29,149,.7)}
+.bm svg{filter:none}
+.wm{color:#fff}.wm .a{background:#fff;color:#5b21b6;box-shadow:none}
+.tag{color:rgba(255,255,255,.88)}.tag::after{border-top-color:rgba(255,255,255,.35)}
+h2{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink)}
+#wdlg h2{color:var(--bad)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 10px 30px -20px rgba(76,29,149,.4)}
+.card::after{display:none}
+.dz{box-shadow:0 18px 50px -28px rgba(109,40,217,.5)}.dz::before{background:linear-gradient(90deg,transparent,#8b5cf6,transparent)}
+.hero h1{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#4c1d95}
+.facts div{background:#fff;border-color:var(--line);color:var(--mute)}
+.facts b{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#6d28d9}
+.stripes i{border-color:#c4b5fd;background:#fff;color:#6d28d9}.stripes i:nth-child(3){background:#6d28d9;border-color:#6d28d9;color:#fff}
+.btn{background:#fff;border:1px solid #d9d0f5;color:#4c1d95;box-shadow:none}
+.btn:hover:not(:disabled){background:#f3efff}
+.btn.pri{background:linear-gradient(135deg,#7c3aed,#5b21b6);border-color:transparent;color:#fff;box-shadow:0 10px 22px -12px rgba(91,33,182,.85)}
+.btn.pri:hover:not(:disabled){background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+input[type=text],input[type=password]{background:#fff;border:1px solid #d9d0f5;color:var(--ink)}
+input::placeholder{color:#9b94bd}
+input[type=text]:focus-visible,input[type=password]:focus-visible{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.16)}
+.chips span{background:#f5f1ff}
+.rules li::before{border-color:#a78bfa}.rules li:first-child::before{background:#7c3aed;border-color:#7c3aed}
+.agree{border-color:#c4b5fd;background:#f7f4ff}.agree input{accent-color:#6d28d9}
+[data-k]{--c1:#8b5cf6;--c2:#4c1d95}
+.pick{box-shadow:0 26px 46px -24px rgba(76,29,149,.65),0 0 0 1px rgba(255,255,255,.2) inset}
+.pick.on{box-shadow:0 0 0 3px #fff,0 0 0 5px #7c3aed,0 30px 50px -22px rgba(76,29,149,.8)}
+.hint::before{background:linear-gradient(90deg,transparent,#c4b5fd 50%,transparent)}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px rgba(124,58,237,.6)}
+.rb{background:#fff;border-color:#d9d0f5;color:#5b21b6}.rb:hover{background:#f3efff}
+.cvdots i{background:#d8cffa}.cvdots i.on{background:#7c3aed}
+.top{background:linear-gradient(var(--bg) 78%,transparent)}
+.bar{background:#fff;border-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 8px 22px -16px rgba(76,29,149,.5)}
+.timer{background:linear-gradient(135deg,#7c3aed,#5b21b6);box-shadow:none}
+.timer.low{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.prog{background:#ece7fb}.prog i{background:linear-gradient(90deg,#8b5cf6,#6d28d9)}
+.pips i{box-shadow:none}
+#qn{background:#efe9ff;color:#5b21b6}
+.opt{background:#fff;border-color:var(--line)}.opt:hover{background:#f7f4ff}
+.opt .k{border-color:#c4b5fd;color:#5b21b6}
+.opt.on{background:#efe9ff;border-color:#7c3aed;box-shadow:0 0 0 1px #7c3aed}.opt.on .k{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.opt.right{background:#ecfdf3;border-color:var(--ok)}.opt.right .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:#fef2f2;border-color:var(--bad)}.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:#fff}
+.q{background:#fff;border-color:var(--line);color:var(--ink)}
+.q.done{background:#7c3aed;border-color:#7c3aed;color:#fff}.q.cur{outline:2px solid #4c1d95}.q.fl::after{border-color:#fff}
+.legend span::before{border-color:#d9d0f5;background:#fff}.legend .a::before{background:#7c3aed;border-color:transparent}
+#finish:not(:disabled){background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;box-shadow:none}
+.score{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#6d28d9}
+.stats div:nth-child(1){background:#ecfdf3}.stats div:nth-child(2){background:#fef2f2}.stats div:nth-child(3){background:#f5f1ff}
+dialog{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 30px 70px -26px rgba(76,29,149,.55)}
+dialog::backdrop{background:rgba(31,26,61,.55);backdrop-filter:none}
+#wdlg{border-color:var(--bad)}
+.dm div{background:#fff}.dm i{background:#efe9ff;color:#6d28d9}
+.omi{background:#fff;border-color:var(--line)}.omi:hover,.omi:focus-visible{background:#f7f4ff;border-color:#7c3aed}
+::selection{background:#7c3aed;color:#fff}
+html{scrollbar-color:#b9a6f0 transparent}
+.dm div::before{background:linear-gradient(#8b5cf6,#6d28d9)}
 </style>
 </head>
 <body>
-<header class="hdr"><div class="bm"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#1fa8e8"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><circle cx="21" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="21" cy="43" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="43" r="9" fill="#ffc83d"/><path d="M38.5 43.2l3.3 3.3 6-6.4" fill="none" stroke="#131737" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="bt"><div class="wm"><span class="a">CBT</span>Perpustakaan</div><div class="tag">Ujian Simulasi</div></div></div><div class="led" role="marquee"><span>UJIAN SIMULASI &nbsp;&bull;&nbsp; SELAMAT DATANG DI UJIAN SIMULASI &nbsp;&bull;&nbsp; BY ANGGA</span></div></header>
+<header class="hdr"><div class="bm"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><circle cx="21" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="21" cy="43" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="43" r="9" fill="#ffc83d"/><path d="M38.5 43.2l3.3 3.3 6-6.4" fill="none" stroke="#131737" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="bt"><div class="wm"><span class="a">CBT</span>Perpustakaan</div><div class="tag">Ujian Simulasi</div></div></div></header>
 <main class="wrap">
 
 <section id="s-login" class="login">
   <div class="hero"><div class="stripes"><i></i><i></i><i></i><i></i><i></i></div><h1>Ujian Simulasi</h1>
-    <p class="mute">Masuk dengan nama, kelas, dan token dari admin.</p>
+    <p class="mute">Masuk dengan username, kelas, dan token dari admin.</p>
     <div class="facts"><div><b>25</b>soal</div><div><b>30</b>menit</div><div><b>5</b>kesempatan</div></div>
   </div>
   <div class="card dz">
     <h2 id="lt">Masuk ujian</h2>
-    <div id="pm"><label for="nama">Nama lengkap</label><input id="nama" type="text" autocomplete="name">
-    <label for="kelas">Kelas</label><input id="kelas" type="text" placeholder="Khusus SMP: 7A, 8B, 9C" maxlength="3" autocapitalize="characters">
+    <div id="pm"><label for="nama">Username</label><input id="nama" type="text" autocomplete="username" placeholder="Username kamu">
+    <label for="kelas">Kelas</label><input id="kelas" type="text" placeholder="Contoh: 7A, 8B, 9C" maxlength="3" autocapitalize="characters">
     <div id="tw"><label for="token">Token ujian</label><input id="token" type="text" autocomplete="off" placeholder="Minta ke admin"></div><div id="aw" class="hide"><label for="adm">Kode admin</label><input id="adm" type="password" inputmode="numeric" autocomplete="off" placeholder="Kode admin"></div>
     <p class="err" id="err" role="alert"></p>
     <button class="btn pri" id="go" style="width:100%">Masuk</button><p class="mute" style="font-size:.88rem;margin:14px 0 0">Belum punya token? Minta ke admin.</p></div>
@@ -364,26 +429,51 @@ h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;b
   <div class="rev" id="rev"></div>
 </section>
 <section id="s-own" class="hide" style="max-width:720px;margin:4vh auto 0">
-  <div class="card" style="margin-bottom:16px">
-    <div style="display:flex;justify-content:space-between;align-items:center;position:relative">
-      <h2 style="margin:0">Panel owner</h2>
-      <button class="btn" id="dots" aria-label="Menu token" aria-expanded="false" style="font-size:1.4rem;line-height:1;padding:6px 14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></button>
-      <div id="menu" class="menu hide">
-        <label for="newtok" style="margin-top:0">Token ujian baru</label>
-        <input id="newtok" type="text" autocomplete="off" placeholder="Min. 4 karakter">
-        <p class="err" id="omsg" style="color:var(--ok)"></p>
-        <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn pri" id="settoken">Simpan token</button></div>
-        <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><label for="ulk" style="margin-top:0">Buka kunci login</label><input id="ulk" type="text" placeholder="Nama peserta"><div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="unlock">Buka kunci</button></div>
-      </div>
-    </div>
-    <div class="row" style="justify-content:flex-start"><button class="btn pri" id="oexam">Kerjakan ujian simulasi</button> <button class="btn" id="olog">Keluar</button></div>
+  <div class="card" id="ohead" style="margin-bottom:16px">
+    <h2 id="otitle" style="margin:0 0 12px">Panel owner</h2>
+    <div class="row" style="justify-content:flex-start;margin:0"><button class="btn pri" id="oexam">Kerjakan ujian simulasi</button> <button class="btn" id="olog">Keluar</button></div>
   </div>
-  <h2>Riwayat banned</h2>
-  <div id="oban" class="mute" style="margin-bottom:16px"></div>
-  <h2>Riwayat selesai ujian simulasi</h2>
-  <div id="odone" class="mute" style="margin-bottom:16px"></div>
-  <h2>Riwayat peserta</h2>
-  <div id="olist" class="mute"></div>
+  <div id="omenu" role="menu" aria-label="Menu panel">
+    <button class="omi" type="button" data-t="p-ban" data-o="1"><span><b>Riwayat banned</b><small>Daftar peserta yang diblokir</small></span><i aria-hidden="true">&rsaquo;</i></button>
+    <button class="omi" type="button" data-t="p-done" data-o="1"><span><b>Riwayat selesai ujian simulasi</b><small>Nilai peserta yang sudah selesai</small></span><i aria-hidden="true">&rsaquo;</i></button>
+    <button class="omi" type="button" data-t="p-list" data-o="1"><span><b>Riwayat peserta</b><small>Status dan pelanggaran peserta</small></span><i aria-hidden="true">&rsaquo;</i></button>
+    <button class="omi" type="button" data-t="p-tok"><span><b>Buat token</b><small>Token baru untuk peserta ujian</small></span><i aria-hidden="true">&rsaquo;</i></button>
+    <button class="omi" type="button" data-t="p-adm" data-o="1"><span><b>Akun admin</b><small>Jadikan user sebagai admin</small></span><i aria-hidden="true">&rsaquo;</i></button>
+    <button class="omi" type="button" data-t="p-unl" data-o="1"><span><b>Buka kunci login</b><small>Buka akun peserta yang terkunci</small></span><i aria-hidden="true">&rsaquo;</i></button>
+  </div>
+  <div id="p-ban" class="opane hide" data-o="1"><button class="btn oback" type="button">&lsaquo; Kembali</button><h2>Riwayat banned</h2><div id="oban" class="mute"></div></div>
+  <div id="p-done" class="opane hide" data-o="1"><button class="btn oback" type="button">&lsaquo; Kembali</button><h2>Riwayat selesai ujian simulasi</h2><div id="odone" class="mute"></div></div>
+  <div id="p-list" class="opane hide" data-o="1"><button class="btn oback" type="button">&lsaquo; Kembali</button><h2>Riwayat peserta</h2><div id="olist" class="mute"></div></div>
+  <div id="p-tok" class="opane hide">
+    <button class="btn oback" type="button">&lsaquo; Kembali</button>
+    <div class="card">
+      <h2>Buat token</h2>
+      <label for="newtok" style="margin-top:0">Token ujian baru</label>
+      <input id="newtok" type="text" autocomplete="off" placeholder="Min. 4 karakter">
+      <div class="row" style="justify-content:flex-start;margin-top:10px"><button class="btn pri" id="settoken">Buat token</button></div>
+      <p class="err" id="omsg" style="color:var(--ok)"></p>
+    </div>
+  </div>
+  <div id="p-adm" class="opane hide" data-o="1">
+    <button class="btn oback" type="button">&lsaquo; Kembali</button>
+    <div class="card">
+      <h2>Akun admin</h2>
+      <label for="admn" style="margin-top:0">Masukin username</label><input id="admn" type="text" autocomplete="off" placeholder="Username">
+      <label for="admp">Kode admin baru</label><input id="admp" type="text" autocomplete="off" placeholder="Min. 4 karakter">
+      <div class="row" style="justify-content:flex-start;margin-top:10px"><button class="btn pri" id="admadd">Buat akun admin</button></div>
+      <p class="err" id="amsg" style="color:var(--ok)"></p>
+      <div id="adlist" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div id="p-unl" class="opane hide" data-o="1">
+    <button class="btn oback" type="button">&lsaquo; Kembali</button>
+    <div class="card">
+      <h2>Buka kunci login</h2>
+      <label for="ulk" style="margin-top:0">Nama peserta</label><input id="ulk" type="text" placeholder="Nama peserta">
+      <div class="row" style="justify-content:flex-start;margin-top:10px"><button class="btn pri" id="unlock">Buka kunci</button></div>
+      <p class="err" id="umsg" style="color:var(--ok)"></p>
+    </div>
+  </div>
 </section>
 <footer class="foot">Ujian Simulasi · by Angga</footer>
 </main>
@@ -775,10 +865,12 @@ var ownOk=false;
 function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("hide");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.add("hide"),5000)}
 $("go").onclick=async()=>{
   await ready;
+  {const n0=$("nama").value.trim();if(n0.replace(/\s/g,"").toLowerCase()===OWN){err("");user={n:n0,k:"Admin"};isOwn=true;panelAdm=false;return openOwner()}}
   const bl=await banLeft();if(bl)return err("Akun ini diblokir sampai jam "+dt(bl).jam+" ("+dt(bl).tgl+" "+dt(bl).bln+" "+dt(bl).thn+").");
   let n=$("nama").value.trim(),k=$("kelas").value.trim(),t=$("token").value.trim();
-  if(n.replace(/\s/g,"").toLowerCase()===OWN&&await adminLogin(t)){err("");user={n,k:"Admin"};isOwn=true;return openOwner()}
-  if(!n||!k||!t)return err("Isi nama, kelas, dan token dulu.");
+  if(n&&db){try{const ad=await db.doc("config/admins").get(),lst=ad.exists?(ad.data().a||[]):[],nm=n.replace(/\s/g,"").toLowerCase(),hit=lst.find(x=>x.k===nm);
+    if(hit){if(!ADK.includes(nm)){ADK.push(nm);tokView()}const code=$("adm").value.trim();if(!code)return err("Isi kode admin dulu.");if(await hash(code)!==hit.h)return err("Kode admin salah.");err("");user={n,k:"Admin"};isOwn=true;panelAdm=true;return openOwner()}}catch(e){}}
+  if(!n||!k||!t)return err("Isi username, kelas, dan token dulu.");
   if(!/^[7-9]\s?[A-Za-z]$/.test(k))return err("Kelas tidak diizinkan. Ujian ini khusus untuk SMP kelas 7, 8, atau 9. Contoh: 7A, 8B, 9C.");
   k=k.replace(/\s/g,"").toUpperCase();
   if(!db)return err("Data ujian belum tersambung. Periksa internet lalu muat ulang halaman.");
@@ -830,7 +922,8 @@ function end(zero){
 }
 $("again").onclick=()=>{$("token").value="";show("s-login")};
 function openOwner(){
-  show("s-own");
+  show("s-own");panelRole();
+  if(panelAdm)return;
   if(!db){$("olist").textContent="Data belum tersambung.";return}
   if(sub)return;sub=true;histSub();
   db.collection("logs").onSnapshot(s=>{
@@ -852,17 +945,20 @@ $("settoken").onclick=async()=>{
   try{await db.doc("config/exam").set({h:await hash(t),at:Date.now()});$("newtok").value="";$("omsg").textContent="Token disimpan. Bagikan ke peserta lewat admin."}
   catch(e){$("omsg").textContent="Gagal menyimpan token."}
 };
-$("olog").onclick=()=>{$("menu").classList.add("hide");show("s-login")};
-$("dots").onclick=()=>{const m=$("menu");m.classList.toggle("hide");$("dots").setAttribute("aria-expanded",String(!m.classList.contains("hide")))};
+$("olog").onclick=()=>{show("s-login")};
 function pane(){$("err").textContent=""}
 
 const ADM="e7d1f058d0666236f91b77f32e34ebcdfef78aed69b2135ab3ca6e30df30c09f";let admFail=0,admLock=0,sessCur=null;
 function release(){if(db&&sessCur){const k=sessCur;sessCur=null;db.doc("sessions/"+k).set({on:false,uid:uid||null,t:Date.now()}).catch(()=>{})}}
-function tokView(){const o=false;$("tw").classList.toggle("hide",o);if(o)$("token").value="";else{$("aw").classList.add("hide");$("adm").value=""}}
-$("nama").addEventListener("input",tokView);
+var ADK=[],adAt=0;
+function adRefresh(){if(!db||Date.now()-adAt<2000)return;adAt=Date.now();db.doc("config/admins").get().then(d=>{ADK=d.exists?(d.data().a||[]).map(x=>x.k):[];tokView()}).catch(()=>{})}
+function tokView(){const nm=$("nama").value.replace(/\s/g,"").toLowerCase(),o=nm===OWN,a=!o&&ADK.includes(nm),m=!o&&!a;
+  $("tw").classList.toggle("hide",!m);$("kelas").previousElementSibling.classList.toggle("hide",!m);$("kelas").classList.toggle("hide",!m);$("aw").classList.toggle("hide",!a);
+  if(!m){$("token").value="";$("kelas").value=""}if(!a)$("adm").value=""}
+$("nama").addEventListener("input",tokView);$("nama").addEventListener("input",adRefresh);$("nama").addEventListener("blur",adRefresh);ready.then(adRefresh);
 $("again").addEventListener("click",release);
 $("outi").onclick=()=>{release();$("token").value="";show("s-login")};
-$("unlock").onclick=async()=>{const n=$("ulk").value.replace(/\s/g,"");if(!n)return;try{await db.doc("sessions/"+await hash(n)).set({on:false,uid:null,t:Date.now()});$("ulk").value="";$("omsg").textContent="Kunci login dibuka."}catch(e){$("omsg").textContent="Gagal membuka kunci."}};
+$("unlock").onclick=async()=>{const n=$("ulk").value.replace(/\s/g,"");if(!n)return;try{await db.doc("sessions/"+await hash(n)).set({on:false,uid:null,t:Date.now()});$("ulk").value="";$("umsg").textContent="Kunci login dibuka."}catch(e){$("umsg").textContent="Gagal membuka kunci."}};
 const _p=pane;pane=function(x){_p(x);tokView()};
 
 /* ===== aturan aktif ===== */
@@ -886,9 +982,27 @@ function introLock(){clearInterval(ilT);let n=5;const a=$("agree"),b=$("start");
 $("agree").onchange=()=>{$("start").disabled=!$("agree").checked};
 const _s2=show;show=function(id){if(id==="s-login")pane();if(id==="s-intro"){$("agree").checked=false;$("start").disabled=true;introLock()}_s2(id);if(id==="s-sub"){if(user){$("dashhi").textContent="Dashboard";dashFill();try{cvCards.forEach(c=>c.classList.toggle("off",!BK(c.dataset.k)))}catch(e){}}cvLayout(cvPos,false);cvPick(Math.round(cvPos))}};
 
+var panelAdm=false,ADL=[];
+function otab(id){document.querySelectorAll(".opane").forEach(p=>p.classList.toggle("hide",p.id!==id));$("ohead").classList.toggle("hide",!!id);$("omenu").classList.toggle("hide",!!id);["omsg","amsg","umsg"].forEach(i=>$(i).textContent="");window.scrollTo(0,0)}
+function panelRole(){$("otitle").textContent=panelAdm?"Panel admin":"Panel owner";
+  document.querySelectorAll("#s-own [data-o]").forEach(e=>e.classList.toggle("hide",panelAdm));
+  otab(null);if(!panelAdm&&db)adLoad()}
+$("omenu").addEventListener("click",e=>{const b=e.target.closest("button[data-t]");if(b)otab(b.dataset.t)});
+$("s-own").addEventListener("click",e=>{if(e.target.closest(".oback"))otab(null)});
+async function adLoad(){try{const d=await db.doc("config/admins").get();ADL=d.exists?(d.data().a||[]):[]}catch(e){ADL=[]}adDraw()}
+function adDraw(){const box=$("adlist");box.textContent="";if(!ADL.length){box.textContent="Belum ada admin.";box.className="mute";return}box.className="";
+  ADL.forEach((x,i)=>{const c=document.createElement("div");c.className="card";c.style.cssText="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px";
+    const b=document.createElement("b");b.textContent=x.n;const d=document.createElement("button");d.className="btn";d.type="button";d.textContent="Hapus";
+    d.onclick=async()=>{ADL.splice(i,1);await adSave("Admin dihapus.");adDraw()};c.append(b,d);box.append(c)})}
+async function adSave(m){try{await db.doc("config/admins").set({a:ADL,at:Date.now()});$("amsg").style.color="var(--ok)";$("amsg").textContent=m;return true}catch(e){$("amsg").style.color="var(--bad)";$("amsg").textContent="Gagal menyimpan admin.";return false}}
+$("admadd").onclick=async()=>{if(panelAdm||!db)return;const n=$("admn").value.trim(),pin=$("admp").value.trim(),k=nk(n);
+  const bad=m=>{$("amsg").style.color="var(--bad)";$("amsg").textContent=m};
+  if(!n)return bad("Isi username admin.");if(k===OWN)return bad("Username itu sudah owner.");if(pin.length<4)return bad("Kode admin minimal 4 karakter.");
+  if(ADL.some(x=>x.k===k))return bad("Username itu sudah jadi admin.");
+  ADL.push({n,k,h:await hash(pin),t:Date.now()});if(await adSave("Admin ditambahkan: "+n)){$("admn").value="";$("admp").value="";adDraw()}else ADL.pop()};
 var isOwn=false;
-$("oexam").onclick=()=>{$("menu").classList.add("hide");$("hi").textContent="Halo, "+user.n+" (Owner)";show("s-intro")};
-$("olog").addEventListener("click",()=>{isOwn=false});
+$("oexam").onclick=()=>{$("hi").textContent="Halo, "+user.n+" ("+(panelAdm?"Admin":"Owner")+")";show("s-intro")};
+$("olog").addEventListener("click",()=>{isOwn=false;panelAdm=false});
 ["again","outi"].forEach(i=>$(i).addEventListener("click",()=>{if(isOwn)openOwner()}));
 
 const BAN_MS=10*60*1000;
@@ -971,10 +1085,18 @@ new MutationObserver(chkTr).observe(document.documentElement,{attributes:true,at
 
 /* ===== jendela mengambang + alarm ===== */
 var master=null,alAway=false;
-function beep(){if(!actx||!master)return;try{for(let i=0;i<10;i++){const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*.16;o.type="square";o.frequency.value=1500;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.4,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.1);o.connect(g);g.connect(master);o.start(t);o.stop(t+.11)}}catch(e){}
-  try{navigator.vibrate&&navigator.vibrate([90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90])}catch(e){}}
-function alarmStart(away){alarmStop();if(!actx)return;try{actx.resume();master=actx.createGain();master.gain.value=1;master.connect(actx.destination)}catch(e){return}alAway=!!away;beep();alT=setInterval(beep,1700)}
-function alarmStop(){if(alT){clearInterval(alT);alT=null}if(master){try{master.gain.value=0;master.disconnect()}catch(e){}master=null}try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+var sirO=null,sirL=null;
+function beep(){try{navigator.vibrate&&navigator.vibrate([90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90,70,90])}catch(e){}}
+function sirenOn(){if(!actx||!master)return;try{
+  const o=actx.createOscillator(),l=actx.createOscillator(),lg=actx.createGain(),lp=actx.createBiquadFilter(),sg=actx.createGain();
+  o.type="sawtooth";o.frequency.value=900;           /* tengah sapuan 600-1200 Hz */
+  l.type="triangle";l.frequency.value=1/1.11;lg.gain.value=300;  /* naik-turun linear, 1 putaran = 1,1 detik */
+  lp.type="lowpass";lp.frequency.value=3000;sg.gain.value=.4;
+  l.connect(lg);lg.connect(o.frequency);o.connect(lp);lp.connect(sg);sg.connect(master);
+  o.start();l.start();sirO=o;sirL=l}catch(e){}}
+function sirenOff(){[sirO,sirL].forEach(n=>{try{n&&n.stop()}catch(e){}});sirO=sirL=null}
+function alarmStart(away){alarmStop();if(!actx)return;try{actx.resume();master=actx.createGain();master.gain.value=1;master.connect(actx.destination)}catch(e){return}alAway=!!away;sirenOn();beep();alT=setInterval(beep,1700)}
+function alarmStop(){if(alT){clearInterval(alT);alT=null}sirenOff();if(master){try{master.gain.value=0;master.disconnect()}catch(e){}master=null}try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
 function backChk(){if(alT&&alAway&&!document.hidden&&document.hasFocus())alarmStop()}
 window.addEventListener("focus",backChk);document.addEventListener("visibilitychange",backChk);
 function floatViol(src){
@@ -991,7 +1113,7 @@ const _wo=$("wok").onclick;
 var batt=null;
 function batTxt(){if(!batt)return"Tidak tersedia";return Math.round(batt.level*100)+"%"+(batt.charging?" · mengisi":"")}
 function dashFill(){const m=$("dashmeta");m.textContent="";
-  [["Username",user.n,IC.user],["Kelas",user.k==="Admin"?"Owner":user.k,IC.cap],["Baterai",batTxt(),IC.bat]].forEach(a=>{const e=document.createElement("div");e.innerHTML='<i></i><span></span><b></b>';e.children[0].innerHTML=a[2];e.children[1].textContent=a[0];e.children[2].textContent=a[1];if(a[0]==="Baterai")e.children[2].id="batv";m.append(e)})}
+  [["Username",user.n,IC.user],["Kelas",user.k==="Admin"?(panelAdm?"Admin":"Owner"):user.k,IC.cap],["Baterai",batTxt(),IC.bat]].forEach(a=>{const e=document.createElement("div");e.innerHTML='<i></i><span></span><b></b>';e.children[0].innerHTML=a[2];e.children[1].textContent=a[0];e.children[2].textContent=a[1];if(a[0]==="Baterai")e.children[2].id="batv";m.append(e)})}
 try{navigator.getBattery&&navigator.getBattery().then(b=>{batt=b;const u=()=>{const v=$("batv");if(v)v.textContent=batTxt()};["levelchange","chargingchange"].forEach(t=>b.addEventListener(t,u));u()})}catch(e){}
 </script>
 </body>
