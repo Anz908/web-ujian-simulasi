@@ -283,7 +283,7 @@ h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;b
 </style>
 </head>
 <body>
-<header class="hdr"><div class="bm"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#1fa8e8"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><circle cx="21" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="21" cy="43" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="43" r="9" fill="#ffc83d"/><path d="M38.5 43.2l3.3 3.3 6-6.4" fill="none" stroke="#131737" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="bt"><div class="wm"><span class="a">CBT</span>Perpustakaan</div><div class="tag">Ujian Simulasi</div></div></div><div class="led" role="marquee"><span>UJIAN SIMULASI &nbsp;&bull;&nbsp; SELAMAT DATANG DI UJIAN SIMULASI &nbsp;&bull;&nbsp; </span></div></header>
+<header class="hdr"><div class="bm"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#1fa8e8"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><circle cx="21" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="21" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="21" cy="43" r="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="43" cy="43" r="9" fill="#ffc83d"/><path d="M38.5 43.2l3.3 3.3 6-6.4" fill="none" stroke="#131737" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="bt"><div class="wm"><span class="a">CBT</span>Perpustakaan</div><div class="tag">Ujian Simulasi</div></div></div><div class="led" role="marquee"><span>UJIAN SIMULASI &nbsp;&bull;&nbsp; SELAMAT DATANG DI UJIAN SIMULASI &nbsp;&bull;&nbsp; BY ANGGA</span></div></header>
 <main class="wrap">
 
 <section id="s-login" class="login">
@@ -385,7 +385,7 @@ h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;b
   <h2>Riwayat peserta</h2>
   <div id="olist" class="mute"></div>
 </section>
-<footer class="foot">Ujian Simulasi</footer>
+<footer class="foot">Ujian Simulasi · by Angga</footer>
 </main>
 <div id="toast" class="toast hide" role="alert"></div>
 
@@ -398,6 +398,16 @@ h2{background:linear-gradient(90deg,#fff,#b9c2ff);-webkit-background-clip:text;b
 </dialog>
 
 <script>
+/* ===== backend Vercel (pengganti database Claude) ===== */
+var AT=""; try{AT=sessionStorage.getItem("cbtadm")||""}catch(e){}
+async function apiCall(b){const r=await fetch("/api/db",{method:"POST",headers:{"content-type":"application/json","x-admin":AT},body:JSON.stringify(b)});if(!r.ok)throw new Error("api "+r.status);return r.json()}
+const _poll={};
+const DB={doc:p=>({get:async()=>{const j=await apiCall({op:"get",path:p});return{exists:!!j.data,data:()=>j.data}},set:async d=>{await apiCall({op:"set",path:p,data:d})}}),
+ collection:c=>({onSnapshot:cb=>{clearInterval(_poll[c]);const tick=async()=>{try{const j=await apiCall({op:"list",col:c});cb({docs:j.docs.map(d=>({data:()=>d}))})}catch(e){}};tick();_poll[c]=setInterval(tick,5000);return()=>clearInterval(_poll[c])}})};
+const USERX={id:async()=>{let i="";try{i=localStorage.getItem("cbtuid")||"";if(!i){i=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());localStorage.setItem("cbtuid",i)}}catch(e){i="u"+Date.now()}return i}};
+window.claude={use:async n=>n==="db"?DB:n==="user"?USERX:null};
+async function adminLogin(p){try{const r=await fetch("/api/db",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({op:"login",password:p})});if(!r.ok)return false;const j=await r.json();AT=j.token;try{sessionStorage.setItem("cbtadm",AT)}catch(e){}return true}catch(e){return false}}
+
 let Q=[];
 const P=a=>a.map(r=>{const x=r.split("|");return{q:x[0],o:x.slice(1,5),a:+x[5]}});
 const SUBJ={
@@ -761,17 +771,17 @@ function show(id){SECS.forEach(s=>$(s).classList.toggle("hide",s!==id));window.s
 const err=m=>{$("err").textContent=m};
 async function hash(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s.trim().toUpperCase()));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 const ready=(async()=>{try{if(window.claude){usr=await claude.use("user");db=await claude.use("db");if(usr)uid=await usr.id()}}catch(e){}})();
-var ownOk=false;ready.then(async()=>{try{ownOk=!!usr&&await usr.isOwner()}catch(e){}try{tokView()}catch(e){}});
+var ownOk=false;
 function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("hide");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.add("hide"),5000)}
 $("go").onclick=async()=>{
   await ready;
   const bl=await banLeft();if(bl)return err("Akun ini diblokir sampai jam "+dt(bl).jam+" ("+dt(bl).tgl+" "+dt(bl).bln+" "+dt(bl).thn+").");
   let n=$("nama").value.trim(),k=$("kelas").value.trim(),t=$("token").value.trim();
-  if(ownOk&&n.replace(/\s/g,"").toLowerCase()===OWN){err("");user={n,k:"Admin"};isOwn=true;return openOwner()}
+  if(n.replace(/\s/g,"").toLowerCase()===OWN&&await adminLogin(t)){err("");user={n,k:"Admin"};isOwn=true;return openOwner()}
   if(!n||!k||!t)return err("Isi nama, kelas, dan token dulu.");
   if(!/^[7-9]\s?[A-Za-z]$/.test(k))return err("Kelas tidak diizinkan. Ujian ini khusus untuk SMP kelas 7, 8, atau 9. Contoh: 7A, 8B, 9C.");
   k=k.replace(/\s/g,"").toUpperCase();
-  if(!db)return err("Data ujian belum tersambung. Muat ulang halaman dan masuk ke akun Claude.");
+  if(!db)return err("Data ujian belum tersambung. Periksa internet lalu muat ulang halaman.");
   let c;try{c=await db.doc("config/exam").get()}catch(e){return err("Gagal membaca token. Coba lagi.")}
   if(!c.exists)return err("Ujian belum dibuka. Minta owner membuat token.");
   if(await hash(t)!==c.data().h)return err("Token tidak cocok. Cek lagi dengan pengawas.");
@@ -848,7 +858,7 @@ function pane(){$("err").textContent=""}
 
 const ADM="e7d1f058d0666236f91b77f32e34ebcdfef78aed69b2135ab3ca6e30df30c09f";let admFail=0,admLock=0,sessCur=null;
 function release(){if(db&&sessCur){const k=sessCur;sessCur=null;db.doc("sessions/"+k).set({on:false,uid:uid||null,t:Date.now()}).catch(()=>{})}}
-function tokView(){const o=ownOk&&$("nama").value.replace(/\s/g,"").toLowerCase()===OWN;$("tw").classList.toggle("hide",o);if(o)$("token").value="";else{$("aw").classList.add("hide");$("adm").value=""}}
+function tokView(){const o=false;$("tw").classList.toggle("hide",o);if(o)$("token").value="";else{$("aw").classList.add("hide");$("adm").value=""}}
 $("nama").addEventListener("input",tokView);
 $("again").addEventListener("click",release);
 $("outi").onclick=()=>{release();$("token").value="";show("s-login")};
